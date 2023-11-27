@@ -1,6 +1,20 @@
 from . import db, login_manager
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
+
+
+class AppUser(db.Model):
+    au_id = db.Column(db.Integer, primary_key=True)
+    au_full_name = db.Column(db.String(100), nullable=False)
+    au_email = db.Column(db.String(120), unique=True, nullable=False)
+    au_mobile_number = db.Column(db.String(15), unique=True, nullable=False)
+    au_password_hash = db.Column(db.String(128), nullable=False)
+
+    def set_password(self, password):
+        self.au_password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+
+    def check_password(self, password):
+        return check_password_hash(self.au_password_hash, password)
 
 
 class User(db.Model, UserMixin):
