@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>{% block title %}{% endblock %}</title>
+
+  
+  <!-- <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png"> -->
+  <!-- <title>
+    Help Missions Dashboard
+  </title> -->
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <!-- Nucleo Icons -->
+  <link href="{{url_for('static',filename='css/nucleo-icons.css')}}" rel="stylesheet" /> 
+  <link href="{{url_for('static',filename='css/nucleo-svg.css')}}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{url_for('static',filename='fontawesome-free-6.3.0-web/css/all.min.css')}}">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <!-- CSS Files -->
+  <link id="pagestyle" href="{{url_for('static',filename='css/material-dashboard.css')}}"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+
+<body class="g-sidenav-show  bg-gray-200">
+  <aside
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href="">
+        <!-- <img src="assets/img/logo.png" class="navbar-brand-img h-100" alt="main_logo"> -->
+        <span class="ms-1 font-weight-bold text-white">Missions App Project</span>
+      </a>
+    </div>
+    <hr class="horizontal light mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{ url_for('main.home') }}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">dashboard</i>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white " href="{{ url_for('main.cities') }}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <style>
+                  svg {
+                    fill: #f9fafd
+                  }
+                </style>
+                <path
+                  d="M384 476.1L192 421.2V35.9L384 90.8V476.1zm32-1.2V88.4L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3V394.6c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2V423.6L32.9 474.5C17.1 480.8 0 469.2 0 452.2V117.4c0-9.8 6-18.6 15.1-22.3z" />
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Cities</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{url_for('main.zones_and_roads')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <style>
+                  svg {
+                    fill: #ffffff
+                  }
+                </style>
+                <path
+                  d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Zone & Road</span>
+          </a>
+        </li>
+        {% if 'user_id' in session and session['user_id'] == 1 %}
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{url_for('main.users')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 640 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <style>
+                  svg {
+                    fill: #ffffff
+                  }
+                </style>
+                <path
+                  d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z" />
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Users</span>
+          </a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link text-white " href="{{url_for('auth.logout')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                <style>
+                  svg {
+                    fill: #ffffff
+                  }
+                </style>
+                <path
+                  d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" />
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Logout</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+      navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+
+          <ul class="navbar-nav  justify-content-end">
+
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="">
+      {% block content %}{% endblock %}
+    </div>
+    <!-- <div class="footer">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>Footer</p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    </main>
+<!--   Core JS Files   -->
+<script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/core/popper.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/core/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/plugins/perfect-scrollbar.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/plugins/smooth-scrollbar.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/plugins/chartjs.min.js')}}"></script>
+<script src="{{url_for('static',filename='fontawesome-free-6.3.0-web/js/all.min.js')}}"></script>
+
+<script>
+  var win = navigator.platform.indexOf('Win') > -1;
+  if (win && document.querySelector('#sidenav-scrollbar')) {
+    var options = {
+      damping: '0.5'
+    }
+    Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+  }
+</script>
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="{{url_for('static',filename='js/material-dashboard.min.js')}}"></script>
+
+
+<script src="{{url_for('static',filename='js/sweetalert.min.js')}}"></script>
+
+
+
+<script>
+  $(document).ready(function() {
+    console.log('doc is ready');
+    var base_url = "baseurl";
+
+
+    /*
+    =========================================================
+                          USER
+    ======================================================
+    */
+    // add guide
+    $(this).on("submit", "#formAddUser", function(e) {
+      e.preventDefault();
+      var formData = new FormData(this);
+      console.log(formData);
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.add_user')}}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          console.log(json);
+          if (json.status == "ok") {
+            console.log('done');
+            $('#formAddUser')[0].reset();
+            swal("Success!", json.message, "success");
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+
+    });
+
+    /* 
+      ==========================================================
+                              CITIES
+      ==========================================================
+      */
+    //  edit city request
+    $(this).on("submit", "#formEditGuide", function(e) {
+      e.preventDefault();
+      var formData = new FormData(this);
+
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.edit_city')}}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          console.log(json);
+          if (json.status == "ok") {
+            console.log('done');
+            $('#formEditGuide')[0].reset();
+            swal("Success!", json.message, "success");
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+
+    });
+    //  open edit modal
+    $(".openEditModalGuide").click(function() {
+      var gid = $(this).data('gid');
+      var gtitle = $(this).data('gtitle');
+      var gtitle_alb = $(this).data('gtitle-alb');
+
+      $("#guideTitleEdit").val(gtitle);
+      $("#guideTitleAlbEdit").val(gtitle_alb);
+      $("#guideIdEdit").val(gid);
+    });
+
+    //  delete city
+    $('.deleteGuideBtn').click(function() {
+      var gid = $(this).data('gid');
+      if (confirm("Are you sure you want to delete?")) {
+        // User clicked "Yes"
+        var formData = new FormData();
+        formData.append('gid', gid);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.delete_city')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(r) {
+
+            setTimeout(function() {
+              location.reload();
+            }, 200);
+
+          },
+          error: function(e) {
+
+          }
+        });
+      } else {
+        // User clicked "No" or closed the confirmation box
+        // Do nothing or perform any other desired action
+      }
+    });
+
+    // add city
+    $(this).on("submit", "#formAddGuide", function(e) {
+      e.preventDefault();
+      var formData = new FormData(this);
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.add_city')}}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          console.log(json);
+          if (json.status == "ok") {
+            console.log('done');
+            $('#formAddGuide')[0].reset();
+            swal("Success!", json.message, "success");
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+
+    });
+
+  
+
+    //  delete road
+    $('.deleteRoadBtn').click(function() {
+      var pid = $(this).data('rid');
+      if (confirm("Are you sure you want to delete?")) {
+        // User clicked "Yes"
+        var formData = new FormData();
+        formData.append('rid', pid);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.delete_road')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(r) {
+
+            setTimeout(function() {
+              location.reload();
+            }, 200);
+
+          },
+          error: function(e) {
+
+          }
+        });
+      } else {
+        // User clicked "No" or closed the confirmation box
+        // Do nothing or perform any other desired action
+      }
+    });
+    //  delete zone
+    $('.deleteZoneBtn').click(function() {
+      var zid = $(this).data('zid');
+
+      if (confirm("Are you sure you want to delete?")) {
+        // User clicked "Yes"
+        var formData = new FormData();
+        formData.append('zid', zid);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.delete_zone')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(r) {
+
+            setTimeout(function() {
+              location.reload();
+            }, 200);
+
+          },
+          error: function(e) {
+
+          }
+        });
+      } else {
+        // User clicked "No" or closed the confirmation box
+        // Do nothing or perform any other desired action
+      }
+    });
+
+    // add road
+    $(this).on("submit", "#formAddRoad", function(e) {
+      e.preventDefault();
+      // Check if the two file names are the same
+      var videoName = $("#formAddRoad input[name='road_file']").val();
+      var formData = new FormData(this);
+      var progressBar = $('.progress-bar');
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.add_road')}}",
+        data: formData,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = (evt.loaded / evt.total) * 100;
+              progressBar.width(percentComplete + '%');
+            }
+          }, false);
+          return xhr;
+        },
+        beforeSend: function() {
+          $('.progress').show();
+        },
+        complete: function() {
+          $('.progress').hide();
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          console.log(json);
+          if (json.status == "ok") {
+            console.log('done');
+            $('#formAddRoad')[0].reset();
+            swal("Success!", json.message, "success");
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+    });
+    // add zone
+    $(this).on("submit", "#formAddZone", function(e) {
+      e.preventDefault();
+      // Check if the two file names are the same
+      var videoName = $("#formAddZone input[name='zone_file']").val();
+     
+      var formData = new FormData(this);
+      var progressBar = $('.progress-bar');
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.add_zone')}}",
+        data: formData,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = (evt.loaded / evt.total) * 100;
+              progressBar.width(percentComplete + '%');
+            }
+          }, false);
+          return xhr;
+        },
+        beforeSend: function() {
+          $('.progress').show();
+        },
+        complete: function() {
+          $('.progress').hide();
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          console.log(json);
+          if (json.status == "ok") {
+            console.log('done');
+            $('#formAddZone')[0].reset();
+            swal("Success!", json.message, "success");
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+         console.log(e);
+        }
+      });
+    });
+
+    $(this).on("click", ".getZonePoints", function(e) {
+      e.preventDefault();
+      var zid = $(this).data('zid');
+      var zname = $(this).data('zname');
+      console.log(zid);
+      var formData = new FormData();
+      formData.append('zid', zid);
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.show_zone_points')}}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          if (json.status == "ok") {
+            var latLngText = ''; // Create an empty string to store the lat/lng values
+            for (var i = 0; i < json.data.length; i++) {
+              latLngText += json.data[i].zp_lat + ', ' + json.data[i].zp_lng + '<br>'; // Concatenate lat and lng with a line break
+            }
+            $('.zone-points').html(latLngText);
+            $('.zone-name').html(zname);
+
+
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+    });
+    $(this).on("click", ".getRoadPoints", function(e) {
+      e.preventDefault();
+      var rid = $(this).data('rid');
+      var rname = $(this).data('rname');
+      console.log(rid);
+      console.log(rname);
+      var formData = new FormData();
+      formData.append('rid', rid);
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('main.show_road_points')}}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(json) {
+          if (json.status == "ok") {
+            var latLngText = ''; // Create an empty string to store the lat/lng values
+            for (var i = 0; i < json.data.length; i++) {
+              latLngText += json.data[i].rp_lat + ', ' + json.data[i].rp_lng + '<br>'; // Concatenate lat and lng with a line break
+            }
+            $('.road-points').html(latLngText);
+            $('.road-name').html(rname);
+
+
+          } else {
+            swal("Error!", json.message, json.status);
+          }
+
+        },
+        error: function(e) {
+
+        }
+      });
+    });
+  });
+
+  
+</script>
+
+</body>
+
+</html>

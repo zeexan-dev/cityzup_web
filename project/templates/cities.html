@@ -1,0 +1,188 @@
+{% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddGuide">Add City</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Cities</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if cities|length > 0 %}
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                            City Name
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                            No. of Zones
+                                        </th>
+                                        <th class="text-secondary opacity-7"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for city in cities %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <p class="text-sm font-weight-bold mb-0">{{ city.g_title }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-sm font-weight-bold mb-0">{{ city.point_count }}</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalCitySettings">
+                                                    <i class="fa-solid fa-gear fa-lg icon-dark"></i>
+                                                </a>
+                                                &nbsp; &nbsp;
+                                                <a href="#" data-gid="{{ city.g_id }}" data-gtitle="{{ city.g_title }}" data-gtitle-alb="{{ city.g_title_alb }}" class="text-secondary font-weight-bold text-sm openEditModalGuide" data-toggle="tooltip" data-original-title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditGuide">
+                                                    <i class="fa-solid fa-pen-to-square fa-lg icon-dark "></i>
+                                                </a>
+                                                &nbsp;
+                                                <a href="#" data-gid="{{ city.g_id }}" class="text-secondary font-weight-bold text-sm deleteGuideBtn" data-toggle="tooltip" data-original-title="Delete">
+                                                    <i class="fa-solid fa-trash fa-lg icon-dark"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <h4 class="text-center">There are currently no data available.</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- settings modal -->
+<div class="modal fade" id="modalCitySettings" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">City Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formCitySettings">
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Frequency</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Duration</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Coins for 1st Alert</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Coins for 1+ Alert</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Coins for Final Alert</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <!-- <div class="input-group input-group-outline">
+                        <label class="form-label">Title of Guide (Alb)</label>
+                        <input type="text" class="form-control" name="title_alb" required>
+                    </div> -->
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- add modal -->
+<div class="modal fade" id="modalAddGuide" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add City</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formAddGuide">
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Name of City</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <br>
+                    <!-- <div class="input-group input-group-outline">
+                        <label class="form-label">Title of Guide (Alb)</label>
+                        <input type="text" class="form-control" name="title_alb" required>
+                    </div> -->
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- edit modal -->
+<div class="modal fade" id="modalEditGuide" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit City</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formEditGuide">
+                    <div class="input-group input-group-outline focused is-focused">
+                        <label class="form-label">Name of City</label>
+                        <input type="text" class="form-control" name="gtitle" id="guideTitleEdit" value="" required>
+                    </div>
+                    <br>
+                    <!-- <div class="input-group input-group-outline focused is-focused">
+                        <label class="form-label">Title of Guide (Alb)</label>
+                        <input type="text" class="form-control" name="gtitle_alb" id="guideTitleAlbEdit" value="" required>
+                    </div> -->
+                    <br>
+
+                    <input type="hidden" name="gid" value="" id="guideIdEdit">
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

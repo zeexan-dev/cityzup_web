@@ -1,0 +1,68 @@
+.bg-gradient-primary {
+  background-image: linear-gradient(195deg, #536dfe 0%, #536dfe 100%);
+}
+
+.bg-gradient-dark {
+  background-image: linear-gradient(195deg, #00053c 0%, #00053c 100%);
+}
+
+.btn-primary {
+  background-color: #00053c !important;
+  box-shadow: none;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #000566 !important;
+  box-shadow: none;
+  border: none;
+}
+
+.btn-primary:focus {
+  background-color: #000566 !important;
+  box-shadow: none;
+  border: none;
+}
+
+.btn-primary:active {
+  background-color: #000566 !important;
+  box-shadow: none;
+  border: none;
+}
+
+.btn-secondary {
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  box-shadow: none;
+}
+
+.shadow-primary {
+  box-shadow: 4px 20px 20px rgba(0, 0, 0, 0.14),
+    0px 7px 10px -5px rgba(0, 0, 0, 0.4) !important
+}
+
+.input-group.input-group-outline .form-control {}
+
+.input-group.input-group-outline.is-focused .form-label+.form-control {
+  /* border-color : #00053c !important;
+    border-top-color: transparent !important;
+    box-shadow: inset 1px 0 #000566, inset -1px 0 #000566, inset 0 -1px #000566; */
+}
+
+/* font awesome icons */
+.icon-dark {
+  color: #00053c;
+}
+
+.spacer {
+  min-height: 50px;
+}
+
+p.zone-points{
+  font-size: 14px;
+}
+p.road-points{
+  font-size: 14px;
+}

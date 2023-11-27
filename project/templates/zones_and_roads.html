@@ -1,0 +1,254 @@
+{% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddZone">Add Zone</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddRoad">Add Road</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Zones</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if zones %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Zone
+                                        Name</th>
+                                    <th
+                                        class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                        City Name</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in zones %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <a href="#" data-zid="{{zone.z_id}}" data-zname="{{zone.z_name}}"
+                                                    class="getZonePoints" data-bs-toggle="modal"
+                                                    data-bs-target="#modalShowZonePoints">
+                                                    <p class="text-sm font-weight-bold mb-0">{{ zone.z_name }}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-bold mb-0">{{ zone.guide.g_title }}</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="#" data-zid="{{ zone.z_id }}"
+                                            class="text-secondary font-weight-bold text-sm deleteZoneBtn"
+                                            data-toggle="tooltip" data-original-title="Delete">
+                                            <i class="fa-solid fa-trash fa-lg icon-dark"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h4 class="text-center">There are currently no data available.</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Roads</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if roads %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Road
+                                        Name</th>
+                                    <th
+                                        class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                        City Name</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for road in roads %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <a href="#" data-rid="{{road.r_id}}" data-rname="{{road.r_name}}"
+                                                    class="getRoadPoints" data-bs-toggle="modal"
+                                                    data-bs-target="#modalShowRoadPoints">
+                                                    <p class="text-sm font-weight-bold mb-0">{{ road.r_name }}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-bold mb-0">{{ road.guide.g_title }}</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="#" data-rid="{{ road.r_id }}"
+                                            class="text-secondary font-weight-bold text-sm deleteRoadBtn"
+                                            data-toggle="tooltip" data-original-title="Delete">
+                                            <i class="fa-solid fa-trash fa-lg icon-dark"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h4 class="text-center">There are currently no data available.</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- show road points modal -->
+<div class="modal fade" id="modalShowRoadPoints" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title road-name" id="exampleModalLabel">Road Points</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="road-points"></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- show zone points modal -->
+<div class="modal fade" id="modalShowZonePoints" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title zone-name" id="exampleModalLabel">Zone Points</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="zone-points"></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- add zone modal -->
+<div class="modal fade" id="modalAddZone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Zone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formAddZone" enctype="multipart/form-data">
+                    <div class="input-group input-group-outline mt-3">
+                        <select name="guide" class="form-control" id="exampleFormControlSelect1" required>
+                            <option value="0">Select City</option>
+                            {% for c in cities %}
+                            <option value="{{c.g_id}}">
+                                {{c.g_title}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Zone Name</label>
+                        <input type="text" class="form-control" name="zname" id="guideTitleEdit" value="" required>
+                    </div>
+                    <br>
+
+                    <p>Zone File</p>
+                    <div class="input-group input-group-outline">
+                        <input type="file" name="zone_file">
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+                    <div class="progress mt-3" style="display: none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- add road modal-->
+<div class="modal fade" id="modalAddRoad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Road</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formAddRoad" enctype="multipart/form-data">
+                    <div class="input-group input-group-outline mt-3">
+                        <select name="guide" class="form-control" id="exampleFormControlSelect1" required>
+                            <option value="0">Select City</option>
+                            {% for c in cities %}
+                            <option value="{{c.g_id}}">
+                                {{c.g_title}}
+                            </option>
+                            {% endfor %}
+
+
+                        </select>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-outline">
+                        <label class="form-label">Road Name</label>
+                        <input type="text" class="form-control" name="rname" id="guideTitleEdit" value="" required>
+                    </div>
+                    <br>
+
+                    <p>Road File</p>
+                    <div class="input-group input-group-outline">
+                        <input type="file" name="road_file">
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+                    <div class="progress mt-3" style="display: none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
