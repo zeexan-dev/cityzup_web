@@ -34,18 +34,14 @@ def signup():
     email = request.form.get('email')
     mobile_number = request.form.get('mobile_number')
     password = request.form.get('password')
-    confirm_password = request.form.get('confirm_password')
 
     # Validate input
-    if not (full_name and email and mobile_number and password and confirm_password):
-        return jsonify({'message': 'Incomplete data provided'})
-
-    if password != confirm_password:
-        return jsonify({'message': 'Passwords do not match'})
+    if not (full_name and email and mobile_number and password ):
+        return jsonify({'status': 'error','message': 'Incomplete data provided'})
 
     # Check if the user already exists
     if AppUser.query.filter_by(au_email=email).first() or AppUser.query.filter_by(au_mobile_number=mobile_number).first():
-        return jsonify({'message': 'User with email or mobile number already exists'})
+        return jsonify({'status': 'error','message': 'User with email or mobile number already exists'})
 
     # Create a new user
     new_user = AppUser(au_full_name=full_name, au_email=email, au_mobile_number=mobile_number)
@@ -55,7 +51,7 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'Signup successful'})
+    return jsonify({'status': 'ok','message': 'Signup successful'})
     
         
 
