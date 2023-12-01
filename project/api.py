@@ -7,25 +7,6 @@ import os
 
 api = Blueprint('api', __name__)
 
-@api.route('/api/login', methods=['POST'])
-def login():
-    # Get data from the request
-    email = request.form.get('email')
-    password = request.form.get('password')
-
-    # Validate input
-    if not (email and password):
-        return jsonify({'error': 'Incomplete data provided'})
-
-    # Check if the user exists
-    user = AppUser.query.filter_by(au_email=email).first()
-
-    if user and user.check_password(password):
-        # Log the user in
-        # login_user(user)
-        return jsonify({'message': 'Login successful'})
-    else:
-        return jsonify({'error': 'Invalid email or password'})
     
 @api.route('/api/signup', methods=['POST'])
 def signup():
@@ -51,8 +32,23 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'status': 'ok','message': 'Signup successful'})
-    
-        
+    return jsonify({'status': 'ok','message': 'Signup Successful'})
 
-#  ================================ CITIES =================================
+@api.route('/api/signin', methods=['POST'])
+def signin():
+    # Get data from the request
+    email_or_mobile = request.form.get('email_or_mobile')
+    password = request.form.get('password')
+
+    # Validate input
+    if not (email_or_mobile and password):
+        return jsonify({'status': 'error', 'message': 'Incomplete data provided'})
+
+    # Check if the user exists based on email or mobile number
+    user = AppUser.query.filter((AppUser.au_email == email_or_mobile) | (AppUser.au_mobile_number == email_or_mobile)).first()
+
+    if not user or not user.check_password(password):
+        return jsonify({'status': 'error', 'message': 'Invalid email/mobile number or password'})
+
+    # Successful authentication
+    return jsonify({'status': 'ok', 'message': 'Signin Successful'})
