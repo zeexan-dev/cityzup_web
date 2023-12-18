@@ -42,13 +42,13 @@ def signin():
 
     # Validate input
     if not (email_or_mobile and password):
-        return jsonify({'status': 'error', 'message': 'Incomplete data provided', 'user_id': ''})
+        return jsonify({'status': 'error', 'message': 'Incomplete data provided', 'user_id': '', 'user_full_name':''})
 
     # Check if the user exists based on email or mobile number
     user = AppUser.query.filter((AppUser.au_email == email_or_mobile) | (AppUser.au_mobile_number == email_or_mobile)).first()
 
     if not user or not user.check_password(password):
-        return jsonify({'status': 'error', 'message': 'Invalid email/mobile number or password', 'user_id':''})
+        return jsonify({'status': 'error', 'message': 'Invalid email/mobile number or password', 'user_id':'', 'user_full_name':''})
 
     # Successful authentication
-    return jsonify({'status': 'ok', 'message': 'Signin Successful', 'user_id': user.au_id })
+    return jsonify({'status': 'ok', 'message': 'Signin Successful', 'user_id': user.au_id, 'user_full_name': user.au_full_name })
