@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
-from .models import Guide, Zone, Road, ZonePoint, RoadPoint, AppUser
+from werkzeug.utils import secure_filename
+import base64
+from .models import Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
 from . import db
 import json
 import os
@@ -52,3 +54,43 @@ def signin():
 
     # Successful authentication
     return jsonify({'status': 'ok', 'message': 'Signin Successful', 'user_id': user.au_id, 'user_full_name': user.au_full_name })
+
+
+@api.route('/api/addalert', methods=['POST'])
+def addalert():
+    # Get data from the request
+    data = request.get_json()
+
+    # Validate input
+    required_fields = ['a_category', 'a_message', 'a_latitude', 'a_longitude', 'au_id', 'a_photo']
+    if not all(field in data for field in required_fields):
+        return jsonify({'status': 'error', 'message': 'Incomplete data provided'})
+
+    # Check if the user exists based on au_id
+    user = AppUser.query.get(data['au_id'])
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Invalid user ID'})
+
+    # Decode the base64-encoded image string
+    image_data = base64.b64decode(data['a_photo'])
+    
+    # Save the image to a file
+    image_filename = 'captured_image.jpg'  # You can generate a unique filename
+    with open(image_filename, 'wb') as f:
+        f.write(image_data)
+
+    # Create a new alert
+    new_alert = Alert(
+        a_category=data['a_category'],
+        a_photo=image_filename,  # Save the filename in the database
+        a_message=data['a_message'],
+        a_latitude=data['a_latitude'],
+        a_longitude=data['a_longitude'],
+        app_user=user
+    )
+
+    # Add the new alert to the database
+    db.session.add(new_alert)
+    db.session.commit()
+
+    return jsonify({'status': 'ok', 'message': 'Alert created successfully'})

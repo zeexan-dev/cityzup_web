@@ -30,8 +30,6 @@ def load_user(user_id):
 class Guide(db.Model):
     g_id = db.Column(db.Integer, primary_key=True)
     g_title = db.Column(db.String(255), nullable=False)
-    g_title_alb = db.Column(db.String(255), nullable=True)
-
 class Zone(db.Model):
     z_id = db.Column(db.Integer, primary_key=True)
     z_name = db.Column(db.String(255), nullable=False)
@@ -59,6 +57,18 @@ class RoadPoint(db.Model):
     rp_lng = db.Column(db.Float, nullable=False)
     r_id = db.Column(db.Integer, db.ForeignKey('road.r_id'), nullable=False)
     road = db.relationship('Road', backref=db.backref('points', lazy=True))
+
+class Alert(db.Model):
+    a_id = db.Column(db.Integer, primary_key=True)
+    a_category = db.Column(db.String(255), nullable=False)
+    a_photo = db.Column(db.String(255)) 
+    a_message = db.Column(db.String(255), nullable=False)
+    a_latitude = db.Column(db.Float, nullable=False)
+    a_longitude = db.Column(db.Float, nullable=False)
+
+    # Foreign key relationship with AppUser
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    app_user = db.relationship('AppUser', backref=db.backref('alerts', lazy=True))
     
 
 

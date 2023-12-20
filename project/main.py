@@ -42,21 +42,19 @@ def add_city():
     try:
         # Get data from the request
         title = request.form.get('title')
-        # title_alb = request.form.get('title_alb')
-        title_alb = "placeholder"
 
         # Check if the title field is empty
-        if not title or not title_alb:
+        if not title:
             return jsonify({"status": "warning", "message": "Both titles are required"})
 
         # Check if the title has at least 3 characters
-        elif len(title) < 3 or len(title_alb) < 3:
+        elif len(title) < 3:
             return jsonify({"status": "warning", "message": "Title must have at least 3 characters."})
 
         # Validation passed, insert the guide into the database
         else:
             # Insert the guide into the database
-            new_guide = Guide(g_title=title, g_title_alb=title_alb)
+            new_guide = Guide(g_title=title)
             db.session.add(new_guide)
             db.session.commit()
 
@@ -72,15 +70,14 @@ def add_city():
 def edit_city():
     data = request.form
     title = data.get('gtitle')
-    title_alb = "placeholder"
     gid = data.get('gid')
 
     # Check if the title field is empty
-    if not title or not title_alb:
+    if not title:
         return jsonify(status='warning', message='Both titles are required')
 
     # Check if the title has at least 3 characters
-    elif len(title) < 3 or len(title_alb) < 3:
+    elif len(title) < 3:
         return jsonify(status='warning', message='Title must have at least 3 characters.')
 
     # Validation passed, update the guide in the database
@@ -89,14 +86,13 @@ def edit_city():
             # Update the guide in the database
             guide = Guide.query.filter_by(g_id=gid).one()
             guide.g_title = title
-            guide.g_title_alb = title_alb
 
             db.session.commit()
 
             return jsonify(status='ok', message='City Edited Successfully')
 
         except NoResultFound:
-            return jsonify(status='error', message='Guide not found')
+            return jsonify(status='error', message='City not found')
 
         except Exception as e:
             # Log the error for debugging
