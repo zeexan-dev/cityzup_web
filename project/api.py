@@ -94,3 +94,27 @@ def addalert():
     db.session.commit()
 
     return jsonify({'status': 'ok', 'message': 'Alert created successfully'})
+
+@api.route('/api/getalerts', methods=['GET'])
+def get_alerts():
+    # Fetch all alerts from the database
+    alerts = Alert.query.all()
+
+    # Prepare a list to store alert data
+    alerts_data = []
+
+    # Convert each alert object to a dictionary
+    for alert in alerts:
+        alert_data = {
+            'a_id': alert.a_id,
+            'a_category': alert.a_category,
+            'a_message': alert.a_message,
+            'a_latitude': alert.a_latitude,
+            'a_longitude': alert.a_longitude,
+            'a_photo': alert.a_photo,
+            'au_id': alert.app_user.au_id,  # Assuming you want to include user ID in the response
+            # 'created_at': alert.created_at.strftime('%Y-%m-%d %H:%M:%S'),  # Include timestamp if needed
+        }
+        alerts_data.append(alert_data)
+
+    return jsonify({'status': 'ok', 'alerts': alerts_data})
