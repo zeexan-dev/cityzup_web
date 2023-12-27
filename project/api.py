@@ -93,7 +93,7 @@ def addalert():
     db.session.add(new_alert)
     db.session.commit()
 
-    return jsonify({'status': 'ok', 'message': 'Alert created successfully'})
+    return jsonify({'status': 'ok', 'message': 'Alert created successfully','alert_id': str(new_alert.a_id)})
 
 @api.route('/api/getalerts', methods=['GET'])
 def get_alerts():
