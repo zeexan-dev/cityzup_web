@@ -1,3 +1,4 @@
+import uuid
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
@@ -73,16 +74,22 @@ def addalert():
 
     # Decode the base64-encoded image string
     image_data = base64.b64decode(data['a_photo'])
+
+    # Save the image to a unique folder for each user
+    user_folder = f"uploads/{user.au_id}"  # Assuming 'uploads' is a folder in your project
+    os.makedirs(user_folder, exist_ok=True)
     
-    # Save the image to a file
-    image_filename = 'captured_image.jpg'  # You can generate a unique filename
-    with open(image_filename, 'wb') as f:
+    # Generate a unique filename
+    image_fileName = f"captured_image_{uuid.uuid4()}.jpg"
+    image_filePath = f"{user_folder}/{image_fileName}"
+    
+    with open(image_filePath, 'wb') as f:
         f.write(image_data)
 
     # Create a new alert
     new_alert = Alert(
         a_category=data['a_category'],
-        a_photo=image_filename,  # Save the filename in the database
+        a_photo=image_fileName,  # Save the filename in the database
         a_message=data['a_message'],
         a_latitude=data['a_latitude'],
         a_longitude=data['a_longitude'],
