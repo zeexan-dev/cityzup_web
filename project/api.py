@@ -131,7 +131,7 @@ def get_app_data():
     data = request.json  # Assuming you send a JSON payload in the request
     user_id = data.get('user_id')
 
-    response_data = {'status':'', 'message':'', 'user_points': 0}
+    response_data = {'status':'', 'message':'', 'app_user_points': 0, 'user': {}}
 
     # Retrieve the user from the database
     user = AppUser.query.get(user_id)
@@ -143,7 +143,13 @@ def get_app_data():
         # Return the required data as JSON
         response_data['status'] = 'ok'
         response_data['message'] = 'User data retrieved successfully'
-        response_data['user_points'] = points_for_alerts
+        response_data['app_user_points'] = points_for_alerts
+        response_data['user'] = {
+            'user_id': user.au_id,
+            'full_name': user.au_full_name,
+            'email': user.au_email,
+            'mobile_number': user.au_mobile_number
+        }
 
         return jsonify(response_data)
     else:
