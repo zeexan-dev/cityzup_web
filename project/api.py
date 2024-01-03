@@ -125,3 +125,28 @@ def get_alerts():
         alerts_data.append(alert_data)
 
     return jsonify({'status': 'ok', 'alerts': alerts_data})
+
+@api.route('/api/get_app_data', methods=['POST'])
+def get_app_data():
+    data = request.json  # Assuming you send a JSON payload in the request
+    user_id = data.get('user_id')
+
+    response_data = {'status':'', 'message':'', 'user_points': 0}
+
+    # Retrieve the user from the database
+    user = AppUser.query.get(user_id)
+
+    if user:
+        # Calculate points dynamically (for example, based on 100 points per alert)
+        points_for_alerts = len(user.alerts) * 100
+
+        # Return the required data as JSON
+        response_data['status'] = 'ok'
+        response_data['message'] = 'User data retrieved successfully'
+        response_data['user_points'] = points_for_alerts
+
+        return jsonify(response_data)
+    else:
+        response_data['status'] = 'logout'
+        response_data['message'] = 'User not found'
+        return jsonify(response_data)
