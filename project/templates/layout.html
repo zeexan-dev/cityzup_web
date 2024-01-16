@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>{% block title %}{% endblock %}</title>
 
-  
+
   <!-- <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon.png">
     <link rel="icon" type="image/png" href="assets/img/favicon.png"> -->
   <!-- <title>
@@ -17,7 +17,7 @@
   <link rel="stylesheet" type="text/css"
     href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
   <!-- Nucleo Icons -->
-  <link href="{{url_for('static',filename='css/nucleo-icons.css')}}" rel="stylesheet" /> 
+  <link href="{{url_for('static',filename='css/nucleo-icons.css')}}" rel="stylesheet" />
   <link href="{{url_for('static',filename='css/nucleo-svg.css')}}" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{{url_for('static',filename='fontawesome-free-6.3.0-web/css/all.min.css')}}">
@@ -25,8 +25,7 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
-  <link id="pagestyle" href="{{url_for('static',filename='css/material-dashboard.css')}}"
-    rel="stylesheet" />
+  <link id="pagestyle" href="{{url_for('static',filename='css/material-dashboard.css')}}" rel="stylesheet" />
   <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
 </head>
 
@@ -85,6 +84,24 @@
               </svg>
             </div>
             <span class="nav-link-text ms-1">Zone & Road</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{url_for('main.get_alerts_with_user_info')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                <style>
+                  svg {
+                    fill: #ffffff
+                  }
+                </style>
+                <path
+                  d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
+              </svg>
+
+            </div>
+            <span class="nav-link-text ms-1">Alerts</span>
           </a>
         </li>
         {% if 'user_id' in session and session['user_id'] == 1 %}
@@ -165,424 +182,424 @@
         </div>
       </div>
     </div> -->
-    </main>
-<!--   Core JS Files   -->
-<script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
-<script src="{{url_for('static',filename='js/core/popper.min.js')}}"></script>
-<script src="{{url_for('static',filename='js/core/bootstrap.min.js')}}"></script>
-<script src="{{url_for('static',filename='js/plugins/perfect-scrollbar.min.js')}}"></script>
-<script src="{{url_for('static',filename='js/plugins/smooth-scrollbar.min.js')}}"></script>
-<script src="{{url_for('static',filename='js/plugins/chartjs.min.js')}}"></script>
-<script src="{{url_for('static',filename='fontawesome-free-6.3.0-web/js/all.min.js')}}"></script>
+  </main>
+  <!--   Core JS Files   -->
+  <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/core/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/plugins/perfect-scrollbar.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/plugins/smooth-scrollbar.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/plugins/chartjs.min.js')}}"></script>
+  <script src="{{url_for('static',filename='fontawesome-free-6.3.0-web/js/all.min.js')}}"></script>
 
-<script>
-  var win = navigator.platform.indexOf('Win') > -1;
-  if (win && document.querySelector('#sidenav-scrollbar')) {
-    var options = {
-      damping: '0.5'
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
-    Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-  }
-</script>
-<!-- Github buttons -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="{{url_for('static',filename='js/material-dashboard.min.js')}}"></script>
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{{url_for('static',filename='js/material-dashboard.min.js')}}"></script>
 
 
-<script src="{{url_for('static',filename='js/sweetalert.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/sweetalert.min.js')}}"></script>
 
 
 
-<script>
-  $(document).ready(function() {
-    console.log('doc is ready');
-    var base_url = "baseurl";
+  <script>
+    $(document).ready(function () {
+      console.log('doc is ready');
+      var base_url = "baseurl";
 
 
-    /*
-    =========================================================
-                          USER
-    ======================================================
-    */
-    // add guide
-    $(this).on("submit", "#formAddUser", function(e) {
-      e.preventDefault();
-      var formData = new FormData(this);
-      console.log(formData);
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.add_user')}}",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          console.log(json);
-          if (json.status == "ok") {
-            console.log('done');
-            $('#formAddUser')[0].reset();
-            swal("Success!", json.message, "success");
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
-      });
-
-    });
-
-    /* 
-      ==========================================================
-                              CITIES
-      ==========================================================
+      /*
+      =========================================================
+                            USER
+      ======================================================
       */
-    //  edit city request
-    $(this).on("submit", "#formEditGuide", function(e) {
-      e.preventDefault();
-      var formData = new FormData(this);
-
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.edit_city')}}",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          console.log(json);
-          if (json.status == "ok") {
-            console.log('done');
-            $('#formEditGuide')[0].reset();
-            swal("Success!", json.message, "success");
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
-      });
-
-    });
-    //  open edit modal
-    $(".openEditModalGuide").click(function() {
-      var gid = $(this).data('gid');
-      var gtitle = $(this).data('gtitle');
-      $("#guideTitleEdit").val(gtitle);
-      $("#guideIdEdit").val(gid);
-    });
-
-    //  delete city
-    $('.deleteGuideBtn').click(function() {
-      var gid = $(this).data('gid');
-      if (confirm("Are you sure you want to delete?")) {
-        // User clicked "Yes"
-        var formData = new FormData();
-        formData.append('gid', gid);
+      // add guide
+      $(this).on("submit", "#formAddUser", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        console.log(formData);
         $.ajax({
           type: 'POST',
-          url: "{{url_for('main.delete_city')}}",
+          url: "{{url_for('main.add_user')}}",
           data: formData,
           cache: false,
           contentType: false,
           processData: false,
-          success: function(r) {
-
-            setTimeout(function() {
-              location.reload();
-            }, 200);
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formAddUser')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
 
           },
-          error: function(e) {
+          error: function (e) {
 
           }
         });
-      } else {
-        // User clicked "No" or closed the confirmation box
-        // Do nothing or perform any other desired action
-      }
-    });
 
-    // add city
-    $(this).on("submit", "#formAddGuide", function(e) {
-      e.preventDefault();
-      var formData = new FormData(this);
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.add_city')}}",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          console.log(json);
-          if (json.status == "ok") {
-            console.log('done');
-            $('#formAddGuide')[0].reset();
-            swal("Success!", json.message, "success");
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
       });
 
-    });
+      /* 
+        ==========================================================
+                                CITIES
+        ==========================================================
+        */
+      //  edit city request
+      $(this).on("submit", "#formEditGuide", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
 
-  
-
-    //  delete road
-    $('.deleteRoadBtn').click(function() {
-      var pid = $(this).data('rid');
-      if (confirm("Are you sure you want to delete?")) {
-        // User clicked "Yes"
-        var formData = new FormData();
-        formData.append('rid', pid);
         $.ajax({
           type: 'POST',
-          url: "{{url_for('main.delete_road')}}",
+          url: "{{url_for('main.edit_city')}}",
           data: formData,
           cache: false,
           contentType: false,
           processData: false,
-          success: function(r) {
-
-            setTimeout(function() {
-              location.reload();
-            }, 200);
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formEditGuide')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
 
           },
-          error: function(e) {
+          error: function (e) {
 
           }
         });
-      } else {
-        // User clicked "No" or closed the confirmation box
-        // Do nothing or perform any other desired action
-      }
-    });
-    //  delete zone
-    $('.deleteZoneBtn').click(function() {
-      var zid = $(this).data('zid');
 
-      if (confirm("Are you sure you want to delete?")) {
-        // User clicked "Yes"
+      });
+      //  open edit modal
+      $(".openEditModalGuide").click(function () {
+        var gid = $(this).data('gid');
+        var gtitle = $(this).data('gtitle');
+        $("#guideTitleEdit").val(gtitle);
+        $("#guideIdEdit").val(gid);
+      });
+
+      //  delete city
+      $('.deleteGuideBtn').click(function () {
+        var gid = $(this).data('gid');
+        if (confirm("Are you sure you want to delete?")) {
+          // User clicked "Yes"
+          var formData = new FormData();
+          formData.append('gid', gid);
+          $.ajax({
+            type: 'POST',
+            url: "{{url_for('main.delete_city')}}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (r) {
+
+              setTimeout(function () {
+                location.reload();
+              }, 200);
+
+            },
+            error: function (e) {
+
+            }
+          });
+        } else {
+          // User clicked "No" or closed the confirmation box
+          // Do nothing or perform any other desired action
+        }
+      });
+
+      // add city
+      $(this).on("submit", "#formAddGuide", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.add_city')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formAddGuide')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
+
+      });
+
+
+
+      //  delete road
+      $('.deleteRoadBtn').click(function () {
+        var pid = $(this).data('rid');
+        if (confirm("Are you sure you want to delete?")) {
+          // User clicked "Yes"
+          var formData = new FormData();
+          formData.append('rid', pid);
+          $.ajax({
+            type: 'POST',
+            url: "{{url_for('main.delete_road')}}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (r) {
+
+              setTimeout(function () {
+                location.reload();
+              }, 200);
+
+            },
+            error: function (e) {
+
+            }
+          });
+        } else {
+          // User clicked "No" or closed the confirmation box
+          // Do nothing or perform any other desired action
+        }
+      });
+      //  delete zone
+      $('.deleteZoneBtn').click(function () {
+        var zid = $(this).data('zid');
+
+        if (confirm("Are you sure you want to delete?")) {
+          // User clicked "Yes"
+          var formData = new FormData();
+          formData.append('zid', zid);
+          $.ajax({
+            type: 'POST',
+            url: "{{url_for('main.delete_zone')}}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (r) {
+
+              setTimeout(function () {
+                location.reload();
+              }, 200);
+
+            },
+            error: function (e) {
+
+            }
+          });
+        } else {
+          // User clicked "No" or closed the confirmation box
+          // Do nothing or perform any other desired action
+        }
+      });
+
+      // add road
+      $(this).on("submit", "#formAddRoad", function (e) {
+        e.preventDefault();
+        // Check if the two file names are the same
+        var videoName = $("#formAddRoad input[name='road_file']").val();
+        var formData = new FormData(this);
+        var progressBar = $('.progress-bar');
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.add_road')}}",
+          data: formData,
+          xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+              if (evt.lengthComputable) {
+                var percentComplete = (evt.loaded / evt.total) * 100;
+                progressBar.width(percentComplete + '%');
+              }
+            }, false);
+            return xhr;
+          },
+          beforeSend: function () {
+            $('.progress').show();
+          },
+          complete: function () {
+            $('.progress').hide();
+          },
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formAddRoad')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
+      });
+      // add zone
+      $(this).on("submit", "#formAddZone", function (e) {
+        e.preventDefault();
+        // Check if the two file names are the same
+        var videoName = $("#formAddZone input[name='zone_file']").val();
+
+        var formData = new FormData(this);
+        var progressBar = $('.progress-bar');
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.add_zone')}}",
+          data: formData,
+          xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+              if (evt.lengthComputable) {
+                var percentComplete = (evt.loaded / evt.total) * 100;
+                progressBar.width(percentComplete + '%');
+              }
+            }, false);
+            return xhr;
+          },
+          beforeSend: function () {
+            $('.progress').show();
+          },
+          complete: function () {
+            $('.progress').hide();
+          },
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formAddZone')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+            console.log(e);
+          }
+        });
+      });
+
+      $(this).on("click", ".getZonePoints", function (e) {
+        e.preventDefault();
+        var zid = $(this).data('zid');
+        var zname = $(this).data('zname');
+        console.log(zid);
         var formData = new FormData();
         formData.append('zid', zid);
         $.ajax({
           type: 'POST',
-          url: "{{url_for('main.delete_zone')}}",
+          url: "{{url_for('main.show_zone_points')}}",
           data: formData,
           cache: false,
           contentType: false,
           processData: false,
-          success: function(r) {
+          success: function (json) {
+            if (json.status == "ok") {
+              var latLngText = ''; // Create an empty string to store the lat/lng values
+              for (var i = 0; i < json.data.length; i++) {
+                latLngText += json.data[i].zp_lat + ', ' + json.data[i].zp_lng + '<br>'; // Concatenate lat and lng with a line break
+              }
+              $('.zone-points').html(latLngText);
+              $('.zone-name').html(zname);
 
-            setTimeout(function() {
-              location.reload();
-            }, 200);
+
+            } else {
+              swal("Error!", json.message, json.status);
+            }
 
           },
-          error: function(e) {
+          error: function (e) {
 
           }
         });
-      } else {
-        // User clicked "No" or closed the confirmation box
-        // Do nothing or perform any other desired action
-      }
-    });
-
-    // add road
-    $(this).on("submit", "#formAddRoad", function(e) {
-      e.preventDefault();
-      // Check if the two file names are the same
-      var videoName = $("#formAddRoad input[name='road_file']").val();
-      var formData = new FormData(this);
-      var progressBar = $('.progress-bar');
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.add_road')}}",
-        data: formData,
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-          xhr.upload.addEventListener("progress", function(evt) {
-            if (evt.lengthComputable) {
-              var percentComplete = (evt.loaded / evt.total) * 100;
-              progressBar.width(percentComplete + '%');
-            }
-          }, false);
-          return xhr;
-        },
-        beforeSend: function() {
-          $('.progress').show();
-        },
-        complete: function() {
-          $('.progress').hide();
-        },
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          console.log(json);
-          if (json.status == "ok") {
-            console.log('done');
-            $('#formAddRoad')[0].reset();
-            swal("Success!", json.message, "success");
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
       });
-    });
-    // add zone
-    $(this).on("submit", "#formAddZone", function(e) {
-      e.preventDefault();
-      // Check if the two file names are the same
-      var videoName = $("#formAddZone input[name='zone_file']").val();
-     
-      var formData = new FormData(this);
-      var progressBar = $('.progress-bar');
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.add_zone')}}",
-        data: formData,
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-          xhr.upload.addEventListener("progress", function(evt) {
-            if (evt.lengthComputable) {
-              var percentComplete = (evt.loaded / evt.total) * 100;
-              progressBar.width(percentComplete + '%');
-            }
-          }, false);
-          return xhr;
-        },
-        beforeSend: function() {
-          $('.progress').show();
-        },
-        complete: function() {
-          $('.progress').hide();
-        },
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          console.log(json);
-          if (json.status == "ok") {
-            console.log('done');
-            $('#formAddZone')[0].reset();
-            swal("Success!", json.message, "success");
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } else {
-            swal("Error!", json.message, json.status);
-          }
+      $(this).on("click", ".getRoadPoints", function (e) {
+        e.preventDefault();
+        var rid = $(this).data('rid');
+        var rname = $(this).data('rname');
+        console.log(rid);
+        console.log(rname);
+        var formData = new FormData();
+        formData.append('rid', rid);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.show_road_points')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            if (json.status == "ok") {
+              var latLngText = ''; // Create an empty string to store the lat/lng values
+              for (var i = 0; i < json.data.length; i++) {
+                latLngText += json.data[i].rp_lat + ', ' + json.data[i].rp_lng + '<br>'; // Concatenate lat and lng with a line break
+              }
+              $('.road-points').html(latLngText);
+              $('.road-name').html(rname);
 
-        },
-        error: function(e) {
-         console.log(e);
-        }
+
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
       });
     });
 
-    $(this).on("click", ".getZonePoints", function(e) {
-      e.preventDefault();
-      var zid = $(this).data('zid');
-      var zname = $(this).data('zname');
-      console.log(zid);
-      var formData = new FormData();
-      formData.append('zid', zid);
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.show_zone_points')}}",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          if (json.status == "ok") {
-            var latLngText = ''; // Create an empty string to store the lat/lng values
-            for (var i = 0; i < json.data.length; i++) {
-              latLngText += json.data[i].zp_lat + ', ' + json.data[i].zp_lng + '<br>'; // Concatenate lat and lng with a line break
-            }
-            $('.zone-points').html(latLngText);
-            $('.zone-name').html(zname);
 
-
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
-      });
-    });
-    $(this).on("click", ".getRoadPoints", function(e) {
-      e.preventDefault();
-      var rid = $(this).data('rid');
-      var rname = $(this).data('rname');
-      console.log(rid);
-      console.log(rname);
-      var formData = new FormData();
-      formData.append('rid', rid);
-      $.ajax({
-        type: 'POST',
-        url: "{{url_for('main.show_road_points')}}",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(json) {
-          if (json.status == "ok") {
-            var latLngText = ''; // Create an empty string to store the lat/lng values
-            for (var i = 0; i < json.data.length; i++) {
-              latLngText += json.data[i].rp_lat + ', ' + json.data[i].rp_lng + '<br>'; // Concatenate lat and lng with a line break
-            }
-            $('.road-points').html(latLngText);
-            $('.road-name').html(rname);
-
-
-          } else {
-            swal("Error!", json.message, json.status);
-          }
-
-        },
-        error: function(e) {
-
-        }
-      });
-    });
-  });
-
-  
-</script>
+  </script>
 
 </body>
 

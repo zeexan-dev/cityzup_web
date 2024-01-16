@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
-from .models import Guide, Zone, Road, ZonePoint, RoadPoint
+from .models import Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
 import os
@@ -20,6 +20,35 @@ def home():
     title = 'Dashboard'
     page_title = 'Recent Cities'
     return render_template('home.html', guides=guides, page_title=page_title, title=title)
+# ================================= ALERTS =================================
+@main.route("/alerts/")
+@login_required
+def get_alerts_with_user_info():
+    # Query alerts with user information
+    alerts_with_user_info = db.session.query(
+        Alert,
+        AppUser
+    ).join(AppUser).all()
+
+    # Extract the relevant information from the query results
+    result = []
+    for alert, user in alerts_with_user_info:
+        result.append({
+            'a_id': alert.a_id,
+            'a_category': alert.a_category,
+            'a_photo': alert.a_photo,
+            'a_message': alert.a_message,
+            'a_latitude': alert.a_latitude,
+            'a_longitude': alert.a_longitude,
+            'au_full_name': user.au_full_name,
+            'au_email': user.au_email,
+            'au_mobile_number': user.au_mobile_number
+        })
+
+    # Render the template with the alerts data
+    title = 'Alerts'
+    page_title = 'Alerts'
+    return render_template('alerts.html', alerts=result, page_title=page_title, title=title)
 
 #  ================================ CITIES =================================
 @main.route("/cities/")
@@ -329,6 +358,8 @@ def delete_zone():
         db.session.rollback()
 
         return jsonify(status='error', message='Cannot delete data, please try again')
+    
+
 # ============================ ROADS =======================
 @main.route('/show_road_points', methods=['POST'])
 def show_road_points():

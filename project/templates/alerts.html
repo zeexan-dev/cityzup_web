@@ -1,0 +1,84 @@
+{% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Add your button or any other UI element here if needed -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Alerts</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if alerts|length > 0 %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                        Alert ID
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Category
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Message
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Location
+                                    </th>
+
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        User
+                                    </th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alert in alerts %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-sm font-weight-bold mb-0">{{ alert.a_id }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ alert.a_category }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ alert.a_message }}</p>
+                                    </td>
+                                    <td>
+                                        <a href="https://www.google.com/maps/place/{{ alert.a_latitude }},{{ alert.a_longitude }}"
+                                            target="_blank">
+                                            <p class="text-sm font-weight-bold mb-0">{{ alert.a_latitude }},{{
+                                                alert.a_longitude }}</p>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ alert.au_full_name }}</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <!-- Add your action buttons or links here -->
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h4 class="text-center">There are currently no alerts available.</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
