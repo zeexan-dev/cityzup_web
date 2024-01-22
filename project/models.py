@@ -9,6 +9,7 @@ class AppUser(db.Model):
     au_email = db.Column(db.String(120), unique=True, nullable=False)
     au_mobile_number = db.Column(db.String(15), unique=True, nullable=False)
     au_password_hash = db.Column(db.String(128), nullable=False)
+    au_photo = db.Column(db.String(255), nullable=True)
 
     def set_password(self, password):
         self.au_password_hash = generate_password_hash(password, method='pbkdf2:sha256')

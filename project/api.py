@@ -28,7 +28,7 @@ def signup():
         return jsonify({'status': 'error','message': 'User with email or mobile number already exists'})
 
     # Create a new user
-    new_user = AppUser(au_full_name=full_name, au_email=email, au_mobile_number=mobile_number)
+    new_user = AppUser(au_full_name=full_name, au_email=email, au_mobile_number=mobile_number, au_photo='')
     new_user.set_password(password)
 
     # Add the new user to the database
@@ -56,6 +56,58 @@ def signin():
     # Successful authentication
     return jsonify({'status': 'ok', 'message': 'Signin Successful', 'user_id': user.au_id, 'user_full_name': user.au_full_name })
 
+
+@api.route('/api/update_profie_image', methods=['POST'])
+def updateProfileImage():
+    # Get data from the request
+    data = request.get_json()
+    
+    response_data = {'status':'', 'message':'', 'user': {}}
+
+    # Validate input
+    required_fields = ['auid', 'photo']
+    if not all(field in data for field in required_fields):
+        response_data['status'] = 'error'
+        response_data['message'] = 'Incomplete data provided'
+        return jsonify(response_data)
+    
+    # Check if the user exists based on au_id
+    user = AppUser.query.get(data['auid'])
+    if not user:
+        response_data['status'] = 'error'
+        response_data['message'] = 'Invalid user ID'
+        return jsonify(response_data)
+    
+    # Decode the base64-encoded image string
+    image_data = base64.b64decode(data['photo'])
+
+    # Save the image to a unique folder for each user
+    user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], str(user.au_id), 'profile_images')
+    os.makedirs(user_folder, exist_ok=True)
+    
+    # Generate a unique filename
+    image_fileName = f"captured_image_{uuid.uuid4()}.jpg"
+    image_filePath = os.path.join(user_folder, image_fileName)
+    
+    with open(image_filePath, 'wb') as f:
+        f.write(image_data)
+
+     # Update the user's profile image path in the database
+    user.au_photo = image_fileName
+    # Commit the changes to the database
+    db.session.commit()
+
+    response_data['status'] = 'ok'
+    response_data['message'] = 'Profile Image Updated'
+    response_data['user'] = {
+            'user_id': user.au_id,
+            'full_name': user.au_full_name,
+            'email': user.au_email,
+            'mobile_number': user.au_mobile_number,
+            'profile_photo': image_fileName
+        }
+
+    return jsonify(response_data)
 
 @api.route('/api/addalert', methods=['POST'])
 def addalert():
@@ -148,7 +200,8 @@ def get_app_data():
             'user_id': user.au_id,
             'full_name': user.au_full_name,
             'email': user.au_email,
-            'mobile_number': user.au_mobile_number
+            'mobile_number': user.au_mobile_number,
+            'profile_photo': user.au_photo
         }
 
         return jsonify(response_data)
