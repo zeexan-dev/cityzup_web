@@ -11,6 +11,55 @@ import os
 api = Blueprint('api', __name__)
 
     
+@api.route('/api/get_zones_and_roads', methods=['GET'])
+def get_zones_and_roads():
+    try:
+        # Retrieve all zones from the database
+        all_zones = Zone.query.all()
+        # Initialize a list to store the coordinates of all zones
+        all_zones_coordinates = []
+
+         # Retrieve all roads from the database
+        all_roads = Road.query.all()
+        # Initialize a list to store the coordinates of all roads
+        all_roads_coordinates = []
+
+        # Loop through each zone
+        for zone in all_zones:
+            zone_id = zone.z_id
+            zone_name = zone.z_name
+
+            # Retrieve the coordinates for the current zone
+            zone_coordinates = ZonePoint.query.filter_by(z_id=zone_id).all()
+
+            # Convert the coordinates to a list of dictionaries
+            zone_coordinates_list = [{'lat': coord.zp_lat, 'lng': coord.zp_lng} for coord in zone_coordinates]
+
+            # Add the zone name and coordinates to the list
+            zone_data = {'zone_name': zone_name, 'coordinates': zone_coordinates_list}
+            all_zones_coordinates.append(zone_data)
+
+        # Loop through each road
+        for road in all_roads:
+            road_id = road.r_id
+            road_name = road.r_name
+
+            # Retrieve the coordinates for the current road
+            road_coordinates = RoadPoint.query.filter_by(r_id=road_id).all()
+
+            # Convert the coordinates to a list of dictionaries
+            road_coordinates_list = [{'lat': coord.rp_lat, 'lng': coord.rp_lng} for coord in road_coordinates]
+
+            # Add the road name and coordinates to the list
+            road_data = {'road_name': road_name, 'coordinates': road_coordinates_list}
+            all_roads_coordinates.append(road_data)
+
+        return jsonify({'status': 'ok', 'zones': all_zones_coordinates, 'roads': all_roads_coordinates})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+
 @api.route('/api/signup', methods=['POST'])
 def signup():
     # Get data from the request
