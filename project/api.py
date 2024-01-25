@@ -36,7 +36,7 @@ def get_zones_and_roads():
             zone_coordinates_list = [{'lat': coord.zp_lat, 'lng': coord.zp_lng} for coord in zone_coordinates]
 
             # Add the zone name and coordinates to the list
-            zone_data = {'zone_name': zone_name, 'coordinates': zone_coordinates_list}
+            zone_data = {'zone_id': zone_id, 'zone_name': zone_name, 'coordinates': zone_coordinates_list}
             all_zones_coordinates.append(zone_data)
 
         # Loop through each road
@@ -51,7 +51,7 @@ def get_zones_and_roads():
             road_coordinates_list = [{'lat': coord.rp_lat, 'lng': coord.rp_lng} for coord in road_coordinates]
 
             # Add the road name and coordinates to the list
-            road_data = {'road_name': road_name, 'coordinates': road_coordinates_list}
+            road_data = {'road_id': road_id, 'road_name': road_name, 'coordinates': road_coordinates_list}
             all_roads_coordinates.append(road_data)
 
         return jsonify({'status': 'ok', 'zones': all_zones_coordinates, 'roads': all_roads_coordinates})
