@@ -362,6 +362,42 @@
         });
 
       });
+       //  open city settings modal
+       $(".openModalCitySettings").click(function () {
+        var gid = $(this).data('gid');
+        $("#guideIdSettings").val(gid);
+      });
+      // form city settings
+      $(this).on("submit", "#formCitySettings", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.update_city_settings')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formCitySettings')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
+
+      });
 
 
 

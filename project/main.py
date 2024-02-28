@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
-from .models import Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
+from .models import Guide, GuideSettings, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
 import os
@@ -54,16 +54,26 @@ def get_alerts_with_user_info():
 @main.route("/cities/")
 @login_required
 def cities():
-    # Query to get all guides with their point counts
-    cities = db.session.query(Guide.g_id, Guide.g_title, db.func.count(Zone.z_id).label('point_count')) \
-                      .outerjoin(Zone, Zone.g_id == Guide.g_id) \
-                      .group_by(Guide.g_id) \
-                      .order_by(Guide.g_id.desc()) \
-                      .all()
+    # Query to get all guides with their point counts and settings
+    cities = db.session.query(
+        Guide.g_id,
+        Guide.g_title,
+        db.func.count(Zone.z_id).label('point_count'),
+        GuideSettings.coins_for_first_alert,
+        GuideSettings.coins_for_confirm_alert,
+        GuideSettings.coins_for_close_alert
+    ) \
+        .outerjoin(Zone, Zone.g_id == Guide.g_id) \
+        .outerjoin(GuideSettings, GuideSettings.g_id == Guide.g_id) \
+        .group_by(Guide.g_id, GuideSettings.coins_for_first_alert, GuideSettings.coins_for_confirm_alert,
+                  GuideSettings.coins_for_close_alert) \
+        .order_by(Guide.g_id.desc()) \
+        .all()
 
     title = 'Cities'
     page_title = 'Cities'
     return render_template('cities.html', cities=cities, page_title=page_title, title=title)
+
 
 @main.route("/cities/add", methods=['POST'])
 @login_required
@@ -85,6 +95,13 @@ def add_city():
             # Insert the guide into the database
             new_guide = Guide(g_title=title)
             db.session.add(new_guide)
+            db.session.commit()
+
+            settings = GuideSettings(coins_for_first_alert=100,
+                                         coins_for_confirm_alert=50,
+                                         coins_for_close_alert=30,
+                                         guide=new_guide)
+            db.session.add(settings)
             db.session.commit()
 
             return jsonify({"status": "ok", "message": "City Added Successfully"})
@@ -158,7 +175,40 @@ def delete_city():
         db.session.rollback()
 
         return jsonify(status='error', message='Cannot delete data, please try again')
+# ================================ CITY SETTINGS =========================
+@main.route("/update_city_settings", methods=['POST'])
+@login_required
+def update_city_settings():
+    try:
+        # Get data from the request
+        first_alert = int(request.form.get('first_alert'))
+        confirm_alert = int(request.form.get('confirm_alert'))
+        final_alert = int(request.form.get('final_alert'))
+        g_id = int(request.form.get('gid'))
 
+        # Check if the title field is empty
+        if not first_alert or not confirm_alert or not final_alert :
+            return jsonify({"status": "warning", "message": "All fields are required"})
+
+        # Check if the title has at least 3 characters
+        elif first_alert < 0 or confirm_alert < 0 or final_alert < 0:
+            return jsonify({"status": "warning", "message": "Coins values must be greater than 0"})
+
+        # Validation passed, insert the guide into the database
+        else:
+            # Insert the guide into the database
+            new_settings = GuideSettings(coins_for_first_alert=first_alert,
+                                      coins_for_confirm_alert=confirm_alert,
+                                      coins_for_close_alert=final_alert,
+                                      g_id = g_id)
+            db.session.add(new_settings)
+            db.session.commit()
+
+            return jsonify({"status": "ok", "message": "Settings Updated Successfully"})
+
+    except Exception as e:
+        print(e)
+        return jsonify({"status": "error", "message": "Cannot add data, please try again"})
 #  ================================ USERS =================================
 @main.route("/users/")
 @login_required
