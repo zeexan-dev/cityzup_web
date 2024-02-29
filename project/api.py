@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, jsonify, redirect, session, url_fo
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 import base64
-from .models import Guide, GuideSettings, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
+from .models import Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
 from . import db
 import json
 import os
@@ -232,7 +232,7 @@ def get_app_data():
     data = request.json  # Assuming you send a JSON payload in the request
     user_id = data.get('user_id')
 
-    response_data = {'status':'', 'message':'', 'app_user_points': 0, 'user': {}, 'city_coins': {}}
+    response_data = {'status':'', 'message':'', 'app_user_points': 0, 'user': {}, 'cities': {}}
 
     # Retrieve the user from the database
     user = AppUser.query.get(user_id)
@@ -241,17 +241,16 @@ def get_app_data():
         # Calculate points dynamically (for example, based on 100 points per alert)
         points_for_alerts = len(user.alerts) * 100
 
-         # Fetch the city coins for each guide
+        # Fetch all guides
         guides = Guide.query.all()
         for guide in guides:
-            guide_settings = GuideSettings.query.filter_by(g_id=guide.g_id).first()
-            if guide_settings:
-                city_coin = {
-                    'first_alert': guide_settings.coins_for_first_alert,
-                    'confirm_alert': guide_settings.coins_for_confirm_alert,
-                    'final_alert': guide_settings.coins_for_close_alert
-                }
-                response_data['city_coins'][guide.g_title] = city_coin
+            # Get guide settings if available
+            city_coins = {
+                'first_alert': guide.g_coins_for_first_alert,
+                'confirm_alert': guide.g_coins_for_confirm_alert,
+                'final_alert': guide.g_coins_for_close_alert
+            }
+            response_data['cities'][guide.g_title] = city_coins
 
         # Return the required data as JSON
         response_data['status'] = 'ok'

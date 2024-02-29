@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
-from .models import Guide, GuideSettings, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
+from .models import Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
 import os
@@ -59,14 +59,13 @@ def cities():
         Guide.g_id,
         Guide.g_title,
         db.func.count(Zone.z_id).label('point_count'),
-        GuideSettings.coins_for_first_alert,
-        GuideSettings.coins_for_confirm_alert,
-        GuideSettings.coins_for_close_alert
+        Guide.g_coins_for_first_alert,
+        Guide.g_coins_for_confirm_alert,
+        Guide.g_coins_for_close_alert
     ) \
         .outerjoin(Zone, Zone.g_id == Guide.g_id) \
-        .outerjoin(GuideSettings, GuideSettings.g_id == Guide.g_id) \
-        .group_by(Guide.g_id, GuideSettings.coins_for_first_alert, GuideSettings.coins_for_confirm_alert,
-                  GuideSettings.coins_for_close_alert) \
+        .group_by(Guide.g_id, Guide.g_coins_for_first_alert,  Guide.g_coins_for_confirm_alert,
+                  Guide.g_coins_for_close_alert) \
         .order_by(Guide.g_id.desc()) \
         .all()
 
@@ -93,22 +92,16 @@ def add_city():
         # Validation passed, insert the guide into the database
         else:
             # Insert the guide into the database
-            new_guide = Guide(g_title=title)
+            
+            new_guide = Guide(g_title=title, g_coins_for_first_alert=100, g_coins_for_confirm_alert= 50, g_coins_for_close_alert=30)
             db.session.add(new_guide)
-            db.session.commit()
-
-            settings = GuideSettings(coins_for_first_alert=100,
-                                         coins_for_confirm_alert=50,
-                                         coins_for_close_alert=30,
-                                         guide=new_guide)
-            db.session.add(settings)
             db.session.commit()
 
             return jsonify({"status": "ok", "message": "City Added Successfully"})
 
     except Exception as e:
         # print(e)
-        return jsonify({"status": "error", "message": "Cannot add data, please try again"})
+        return jsonify({"status": "error", "message": "Cannot add data, please try again " + str(e)})
 
 
 @main.route("/cities/edit", methods=['POST'])
@@ -196,18 +189,18 @@ def update_city_settings():
 
         # Validation passed, update the guide settings in the database
         else:
-            # Find the existing guide settings based on g_id
-            existing_settings = GuideSettings.query.filter_by(g_id=g_id).first()
+            # Find the existing guide based on g_id
+            existing_guide = Guide.query.get(g_id)
 
-            # Update the guide settings if it exists
-            if existing_settings:
-                existing_settings.coins_for_first_alert = first_alert
-                existing_settings.coins_for_confirm_alert = confirm_alert
-                existing_settings.coins_for_close_alert = final_alert
+            if existing_guide:
+                # Update the guide settings
+                existing_guide.g_coins_for_first_alert = first_alert
+                existing_guide.g_coins_for_confirm_alert = confirm_alert
+                existing_guide.g_coins_for_close_alert = final_alert
                 db.session.commit()
                 return jsonify({"status": "ok", "message": "Settings Updated Successfully"})
             else:
-                return jsonify({"status": "error", "message": "Guide settings not found"})
+                return jsonify({"status": "error", "message": "Guide not found"})
 
 
     except Exception as e:

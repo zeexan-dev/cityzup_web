@@ -31,14 +31,9 @@ def load_user(user_id):
 class Guide(db.Model):
     g_id = db.Column(db.Integer, primary_key=True)
     g_title = db.Column(db.String(255), nullable=False)
-
-class GuideSettings(db.Model):
-    gs_id = db.Column(db.Integer, primary_key=True)
-    coins_for_first_alert = db.Column(db.Integer, nullable=False)
-    coins_for_confirm_alert = db.Column(db.Integer, nullable=False)
-    coins_for_close_alert = db.Column(db.Integer, nullable=False)
-    g_id = db.Column(db.Integer, db.ForeignKey('guide.g_id'), nullable=False)
-    guide = db.relationship('Guide', backref=db.backref('settings', lazy=True))
+    g_coins_for_first_alert = db.Column(db.Integer, nullable=False)
+    g_coins_for_confirm_alert = db.Column(db.Integer, nullable=False)
+    g_coins_for_close_alert = db.Column(db.Integer, nullable=False)
 
 
 class Zone(db.Model):
