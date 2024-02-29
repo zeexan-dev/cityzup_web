@@ -194,17 +194,21 @@ def update_city_settings():
         elif first_alert < 0 or confirm_alert < 0 or final_alert < 0:
             return jsonify({"status": "warning", "message": "Coins values must be greater than 0"})
 
-        # Validation passed, insert the guide into the database
+        # Validation passed, update the guide settings in the database
         else:
-            # Insert the guide into the database
-            new_settings = GuideSettings(coins_for_first_alert=first_alert,
-                                      coins_for_confirm_alert=confirm_alert,
-                                      coins_for_close_alert=final_alert,
-                                      g_id = g_id)
-            db.session.add(new_settings)
-            db.session.commit()
+            # Find the existing guide settings based on g_id
+            existing_settings = GuideSettings.query.filter_by(g_id=g_id).first()
 
-            return jsonify({"status": "ok", "message": "Settings Updated Successfully"})
+            # Update the guide settings if it exists
+            if existing_settings:
+                existing_settings.coins_for_first_alert = first_alert
+                existing_settings.coins_for_confirm_alert = confirm_alert
+                existing_settings.coins_for_close_alert = final_alert
+                db.session.commit()
+                return jsonify({"status": "ok", "message": "Settings Updated Successfully"})
+            else:
+                return jsonify({"status": "error", "message": "Guide settings not found"})
+
 
     except Exception as e:
         print(e)

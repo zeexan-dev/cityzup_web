@@ -364,8 +364,18 @@
       });
        //  open city settings modal
        $(".openModalCitySettings").click(function () {
+        console.log('open settings modal');
         var gid = $(this).data('gid');
+        var first_coin = $(this).data('firstcoin');
+        var confirm_coin = $(this).data('confirmcoin');
+        var close_coin = $(this).data('closecoin');
+        console.log(first_coin);
+        console.log(confirm_coin);
+        console.log(close_coin);
         $("#guideIdSettings").val(gid);
+        $("#firstCoinSettings").val(first_coin);
+        $("#confirmCoinSettings").val(confirm_coin);
+        $("#lastCoinSettings").val(close_coin);
       });
       // form city settings
       $(this).on("submit", "#formCitySettings", function (e) {
