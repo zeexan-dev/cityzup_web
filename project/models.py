@@ -39,9 +39,13 @@ class Guide(db.Model):
 class Zone(db.Model):
     z_id = db.Column(db.Integer, primary_key=True)
     z_name = db.Column(db.String(255), nullable=False)
+    z_centroid_lat = db.Column(db.Float)
+    z_centroid_lng = db.Column(db.Float)
     g_id = db.Column(db.Integer, db.ForeignKey('guide.g_id'), nullable=False)
     guide = db.relationship('Guide', backref=db.backref('zones', lazy=True))
     zone_points = db.relationship('ZonePoint', backref=db.backref('zones', lazy=True), cascade='all, delete-orphan')
+    # Relationship with alerts
+    zone_alerts = db.relationship('Alert', backref='zones', lazy=True)
 
 class ZonePoint(db.Model):
     zp_id = db.Column(db.Integer, primary_key=True)
@@ -71,10 +75,17 @@ class Alert(db.Model):
     a_message = db.Column(db.String(255), nullable=False)
     a_latitude = db.Column(db.Float, nullable=False)
     a_longitude = db.Column(db.Float, nullable=False)
+    a_points = db.Column(db.Integer, nullable=False)
+    
+    # Relationship with Zone
+    z_id = db.Column(db.Integer, db.ForeignKey('zone.z_id'), nullable=False)
+    zone = db.relationship('Zone', backref=db.backref('alerts', lazy=True))
 
     # Foreign key relationship with AppUser
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
     app_user = db.relationship('AppUser', backref=db.backref('alerts', lazy=True))
+   
+    
     
 
 

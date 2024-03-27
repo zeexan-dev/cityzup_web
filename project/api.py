@@ -28,6 +28,7 @@ def get_zones_and_roads():
         for zone in all_zones:
             zone_id = zone.z_id
             zone_name = zone.z_name
+            zone_centeroid = {'lat': zone.z_centroid_lat, 'lng': zone.z_centroid_lng}
 
             # Retrieve the coordinates for the current zone
             zone_coordinates = ZonePoint.query.filter_by(z_id=zone_id).all()
@@ -36,7 +37,7 @@ def get_zones_and_roads():
             zone_coordinates_list = [{'lat': coord.zp_lat, 'lng': coord.zp_lng} for coord in zone_coordinates]
 
             # Add the zone name and coordinates to the list
-            zone_data = {'zone_id': zone_id, 'zone_name': zone_name, 'coordinates': zone_coordinates_list}
+            zone_data = {'zone_id': zone_id, 'zone_name': zone_name, 'coordinates': zone_coordinates_list, 'centeroid': zone_centeroid}
             all_zones_coordinates.append(zone_data)
 
         # Loop through each road
@@ -164,7 +165,7 @@ def addalert():
     data = request.get_json()
 
     # Validate input
-    required_fields = ['a_category', 'a_message', 'a_latitude', 'a_longitude', 'au_id', 'a_photo']
+    required_fields = ['a_category', 'a_message', 'a_latitude', 'a_longitude', 'au_id', 'a_photo', 'z_id']
     if not all(field in data for field in required_fields):
         return jsonify({'status': 'error', 'message': 'Incomplete data provided'})
 
@@ -187,6 +188,17 @@ def addalert():
     with open(image_filePath, 'wb') as f:
         f.write(image_data)
 
+    # Fetch the zone based on zone_id
+    zone = Zone.query.get(data['z_id'])
+    if not zone:
+        return jsonify({'status': 'error', 'message': 'Invalid zone ID'})
+    
+     # Fetch the associated city/guide for the zone
+    guide = zone.guide
+
+    # Calculate the total coins for the city/guide
+    coins_to_be_granted = guide.g_coins_for_first_alert
+
     # Create a new alert
     new_alert = Alert(
         a_category=data['a_category'],
@@ -194,6 +206,8 @@ def addalert():
         a_message=data['a_message'],
         a_latitude=data['a_latitude'],
         a_longitude=data['a_longitude'],
+        a_points = coins_to_be_granted,
+        z_id=data['z_id'],  # Add z_id
         app_user=user
     )
 
@@ -201,7 +215,7 @@ def addalert():
     db.session.add(new_alert)
     db.session.commit()
 
-    return jsonify({'status': 'ok', 'message': 'Alert created successfully','alert_id': str(new_alert.a_id)})
+    return jsonify({'status': 'ok', 'message': 'Alert created successfully', 'alert_id': str(new_alert.a_id), 'coins_granted':coins_to_be_granted})
 
 @api.route('/api/getalerts', methods=['GET'])
 def get_alerts():
@@ -239,7 +253,18 @@ def get_app_data():
 
     if user:
         # Calculate points dynamically (for example, based on 100 points per alert)
-        points_for_alerts = len(user.alerts) * 100
+         # Calculate points dynamically based on the associated guide's settings for each alert
+        points_for_alerts = 0
+        points_for_confirmation = 0
+        points_for_close = 0
+
+        # Fetch all alerts for the user
+        alerts = Alert.query.filter_by(au_id=user_id).all()
+        for alert in alerts:
+            # Add points based on the alert's points
+            points_for_alerts += alert.a_points
+
+        total_user_points = points_for_alerts + points_for_confirmation + points_for_close
 
         # Fetch all guides
         guides = Guide.query.all()
@@ -255,7 +280,7 @@ def get_app_data():
         # Return the required data as JSON
         response_data['status'] = 'ok'
         response_data['message'] = 'User data retrieved successfully'
-        response_data['app_user_points'] = points_for_alerts
+        response_data['app_user_points'] = total_user_points
         response_data['user'] = {
             'user_id': user.au_id,
             'full_name': user.au_full_name,

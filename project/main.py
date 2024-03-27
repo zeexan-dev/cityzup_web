@@ -4,6 +4,8 @@ from .models import Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
 import os
+from shapely.geometry import Polygon
+from shapely.ops import cascaded_union
 
 main = Blueprint('main', __name__)
 
@@ -360,6 +362,14 @@ def add_zone():
 
             # Insert the data into the zone_points table
             db.session.bulk_insert_mappings(ZonePoint, zone_points_data)
+            db.session.commit()
+
+            # Calculate centroid
+            polygon = Polygon(coordinates)
+            centroid = polygon.centroid
+            # Save centroid in database
+            new_zone.z_centroid_lat = centroid.y
+            new_zone.z_centroid_lng = centroid.x
             db.session.commit()
 
             return jsonify({'status': 'ok', 'message': 'Zone and Zone Points Added Successfully'})
