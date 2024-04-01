@@ -1,4 +1,6 @@
 from . import db, login_manager
+from datetime import datetime
+
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 
@@ -85,7 +87,29 @@ class Alert(db.Model):
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
     app_user = db.relationship('AppUser', backref=db.backref('alerts', lazy=True))
    
-    
+class AlertConfirm(db.Model):
+    acn_id = db.Column(db.Integer, primary_key=True)
+    acn_timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # Foreign key relationship with AppUser
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    app_user = db.relationship('AppUser', backref=db.backref('confirmations', lazy=True))
+
+    # Foreign key relationship with Alert
+    a_id = db.Column(db.Integer, db.ForeignKey('alert.a_id'), nullable=False)
+    alert = db.relationship('Alert', backref=db.backref('confirmations', lazy=True))
+
+class AlertClose(db.Model):
+    acl_id = db.Column(db.Integer, primary_key=True)
+    acl_timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # Foreign key relationship with AppUser
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    app_user = db.relationship('AppUser', backref=db.backref('closures', lazy=True))
+
+    # Foreign key relationship with Alert
+    a_id = db.Column(db.Integer, db.ForeignKey('alert.a_id'), nullable=False)
+    alert = db.relationship('Alert', backref=db.backref('closures', uselist=False))
     
 
 

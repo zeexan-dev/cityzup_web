@@ -3,14 +3,72 @@ from flask import Blueprint, render_template, jsonify, redirect, session, url_fo
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 import base64
-from .models import Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
 from . import db
 import json
 import os
 
 api = Blueprint('api', __name__)
 
+@api.route('/api/add_alert_confirm', methods=['POST'])
+def add_alert_confirm():
+    try:
+        # Get data from the request
+        data = request.get_json()
+
+        # Validate input
+        required_fields = ['au_id', 'a_id']
+        if not all(field in data for field in required_fields):
+            return jsonify({'status': 'error', 'message': 'Incomplete data provided'})
+        
+        # Get data from the request
+        au_id = int(data['au_id'])
+        a_id = int(data['a_id'])
+
+        # Check if au_id is already present for a_id
+        if AlertConfirm.query.filter_by(au_id=au_id, a_id=a_id).first():
+            return jsonify({"status": "warning", "message": "Alert already confirmed by this user"})
+
+        # Insert data into AlertConfirm table
+        alert_confirm = AlertConfirm(au_id=au_id, a_id=a_id)
+        db.session.add(alert_confirm)
+        db.session.commit()
+
+        return jsonify({"status": "ok", "message": "Alert confirmation added successfully"})
+    except Exception as e:
+        print(e)
+        return jsonify({"status": "error", "message": "Failed to add alert confirmation"}), 500
     
+@api.route('/api/add_alert_close', methods=['POST'])
+def add_alert_close():
+    try:
+        # Get data from the request
+        data = request.get_json()
+
+        # Validate input
+        required_fields = ['au_id', 'a_id']
+        if not all(field in data for field in required_fields):
+            return jsonify({'status': 'error', 'message': 'Incomplete data provided'})
+        
+        # Get data from the request
+        au_id = int(data['au_id'])
+        a_id = int(data['a_id'])
+
+        # Check if any user has already closed the alert for the given a_id
+        if AlertClose.query.filter_by(a_id=a_id).first():
+            return jsonify({"status": "warning", "message": "Alert already closed"})
+
+        # Insert data into AlertClose table
+        alert_close = AlertClose(au_id=au_id, a_id=a_id)
+        db.session.add(alert_close)
+        db.session.commit()
+
+        return jsonify({"status": "ok", "message": "Alert closure added successfully"})
+    except Exception as e:
+        print(e)
+        return jsonify({"status": "error", "message": "Failed to add alert closure"}), 500
+    
+
 @api.route('/api/get_zones_and_roads', methods=['GET'])
 def get_zones_and_roads():
     try:
