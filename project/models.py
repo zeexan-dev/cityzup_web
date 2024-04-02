@@ -90,6 +90,7 @@ class Alert(db.Model):
 class AlertConfirm(db.Model):
     acn_id = db.Column(db.Integer, primary_key=True)
     acn_timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    acn_points = db.Column(db.Integer, nullable=False)
 
     # Foreign key relationship with AppUser
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
@@ -102,6 +103,8 @@ class AlertConfirm(db.Model):
 class AlertClose(db.Model):
     acl_id = db.Column(db.Integer, primary_key=True)
     acl_timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    acl_points = db.Column(db.Integer, nullable=False)
+
 
     # Foreign key relationship with AppUser
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)

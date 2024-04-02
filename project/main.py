@@ -6,7 +6,7 @@ import json
 import os
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
-
+from sqlalchemy.orm.exc import NoResultFound
 main = Blueprint('main', __name__)
 
 @main.route("/")
