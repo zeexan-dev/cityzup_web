@@ -29,6 +29,11 @@ class User(db.Model, UserMixin):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+class Equivalent(db.Model):    
+    eq_id = db.Column(db.Integer, primary_key=True)
+    eq_name = db.Column(db.String(255), nullable=False)
+    eq_coins = db.Column(db.Integer, nullable=False)
+    eq_picture = db.Column(db.String(255), nullable=True)
 
 class Guide(db.Model):
     g_id = db.Column(db.Integer, primary_key=True)

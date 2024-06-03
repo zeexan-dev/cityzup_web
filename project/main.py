@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request
+from flask import Blueprint, current_app, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
-from .models import Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
 import os
+from werkzeug.utils import secure_filename
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
 from sqlalchemy.orm.exc import NoResultFound
@@ -22,6 +23,59 @@ def home():
     title = 'Dashboard'
     page_title = 'Recent Cities'
     return render_template('home.html', guides=guides, page_title=page_title, title=title)
+
+# ================================= EQUIVALENTS =========================
+@main.route("/equivalents")
+@login_required  # Ensure the user is logged in
+def equivalents():
+    # Query to get all equivalents
+    equivalents = Equivalent.query.order_by(Equivalent.eq_id.desc()).all()
+
+    title = 'Equivalents'
+    page_title = 'Equivalent Items'
+    return render_template('equivalents.html', equivalents=equivalents, page_title=page_title, title=title)
+
+@main.route("/equivalents/add", methods=['POST'])
+@login_required
+def add_equivalent():
+    try:
+        # Get data from the request
+        name = request.form.get('name')
+        coins = request.form.get('coins')
+        picture = request.files.get('picture')
+
+        # Check if the name field is empty
+        if not name or not coins or not picture:
+            return jsonify({"status": "warning", "message": "All fields are required"})
+
+        # Check if the name has at least 2 characters
+        if len(name) < 2:
+            return jsonify({"status": "warning", "message": "Name must have at least two characters."})
+      
+        # Convert coins to int and check if it is at least 1
+        try:
+            coins = int(coins)
+            if coins < 1:
+                return jsonify({"status": "warning", "message": "Coins must be at least 1."})
+        except ValueError:
+            return jsonify({"status": "warning", "message": "Coins must be a valid integer."})
+        
+         # Save the picture
+        filename = secure_filename(picture.filename)
+        picture_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        picture.save(picture_path)
+   
+        # Insert the guide into the database
+        new_equivalent = Equivalent(eq_name=name, eq_coins=int(coins), eq_picture=filename)
+        db.session.add(new_equivalent)
+        db.session.commit()
+
+        return jsonify({"status": "ok", "message": "Equivalent Added Successfully"})
+
+    except Exception as e:
+        # print(e)
+        return jsonify({"status": "error", "message": "Cannot add data, please try again. Error: " + str(e)})
+    
 # ================================= ALERTS =================================
 @main.route("/alerts/")
 @login_required
