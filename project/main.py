@@ -1,5 +1,7 @@
 from flask import Blueprint, current_app, render_template, jsonify, redirect, session, url_for, request
 from flask_login import login_user, logout_user, login_required
+
+from project.project_utils import FileUtils
 from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
 from . import db
 import json
@@ -81,9 +83,16 @@ def add_equivalent():
             return jsonify({"status": "warning", "message": "Invalid image file."})
         
          # Save the picture
-        print(picture.filename)
-        filename = secure_filename(picture.filename)
-        picture_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+
+         # Reset stream position to beginning
+        picture.stream.seek(0)
+        filename = FileUtils.generate_unique_filename(picture.filename)
+
+        # Ensure the 'equivalents' folder exists
+        equivalents_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], 'equivalents')
+        os.makedirs(equivalents_folder, exist_ok=True)
+
+        picture_path = os.path.join(equivalents_folder, filename)
         picture.save(picture_path)
    
         # Insert the guide into the database

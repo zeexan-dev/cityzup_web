@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -23,5 +24,9 @@ def create_app():
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint)
+
+    # Ensure the 'equivalents' folder exists
+    equivalents_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'equivalents')
+    os.makedirs(equivalents_folder, exist_ok=True)
 
     return app
