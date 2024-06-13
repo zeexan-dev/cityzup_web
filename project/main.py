@@ -4,6 +4,7 @@ from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, 
 from . import db
 import json
 import os
+from PIL import Image
 from werkzeug.utils import secure_filename
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
@@ -57,10 +58,30 @@ def add_equivalent():
             coins = int(coins)
             if coins < 1:
                 return jsonify({"status": "warning", "message": "Coins must be at least 1."})
+            if coins > 999 :
+                return jsonify({"status": "warning", "message": "Coins must not be greater than 999"})
         except ValueError:
             return jsonify({"status": "warning", "message": "Coins must be a valid integer."})
         
+        # Check if the picture is a valid image and of correct format
+        if not (picture and (picture.filename.endswith('.jpg') or picture.filename.endswith('.png'))):
+            return jsonify({"status": "warning", "message": "Picture must be a JPG or PNG image."})
+        
+        # Open the image file to check dimensions
+        try:
+            image = Image.open(picture)
+            if image.format not in ['JPEG', 'PNG', 'JPG', 'jpg', 'jpeg', 'png']:
+                return jsonify({"status": "warning", "message": "Image must be in JPG or PNG format."})
+            width, height = image.size
+            if width != height:
+                return jsonify({"status": "warning", "message": "Image must be square."})
+            if width > 500 or height > 500:
+                return jsonify({"status": "warning", "message": "Image dimensions must not exceed 500x500 pixels."})
+        except Exception as e:
+            return jsonify({"status": "warning", "message": "Invalid image file."})
+        
          # Save the picture
+        print(picture.filename)
         filename = secure_filename(picture.filename)
         picture_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         picture.save(picture_path)
