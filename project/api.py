@@ -3,14 +3,38 @@ from flask import Blueprint, render_template, jsonify, redirect, session, url_fo
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 import base64
-from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent
 from . import db
 import json
 import os
 
 api = Blueprint('api', __name__)
 
+@api.route('/api/get_equivalents', methods=['GET'])
+def get_equivalents():
+    try:
+        # Fetch all equivalents from the database
+        equivalents = Equivalent.query.all()
 
+        # Prepare a list to store equivalent data
+        equivalents_data = []
+
+        # Convert each equivalent object to a dictionary
+        for equivalent in equivalents:
+            equivalent_data = {
+                'eq_id': equivalent.eq_id,  # Adjust field names based on your model
+                'eq_name': equivalent.eq_name,
+                'eq_coins': equivalent.eq_coins,
+                'eq_picture': equivalent.eq_picture,
+                # Add more fields as needed
+            }
+            equivalents_data.append(equivalent_data)
+
+        return jsonify({'status': 'ok', 'equivalents': equivalents_data})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    
 @api.route('/api/get_zones_and_roads', methods=['GET'])
 def get_zones_and_roads():
     try:
