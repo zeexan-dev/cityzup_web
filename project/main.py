@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, render_template, jsonify, redirect, se
 from flask_login import login_user, logout_user, login_required
 
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest
 from . import db
 import json
 import os
@@ -37,6 +37,42 @@ def equivalents():
     title = 'Equivalents'
     page_title = 'Equivalent Items'
     return render_template('equivalents.html', equivalents=equivalents, page_title=page_title, title=title)
+
+@main.route('/equivalents_requests')
+@login_required
+def equivalents_requests():
+    try:
+        # Fetch equivalents requests data from the database
+        equivalents_requests = EquivalentRequest.query.join(Equivalent).join(AppUser).all()
+        # print(json.dumps(equivalents_requests))
+
+        return render_template('equivalents_requests.html', equivalents_requests=equivalents_requests)
+    except Exception as e:
+        # Handle exceptions, e.g., log the error
+        print(f"Error fetching equivalents requests: {str(e)}")
+        return render_template('equivalents_requests.html', equivalents_requests=[])
+
+@main.route('/update_equivalent_request', methods=['POST'])
+@login_required
+def update_equivalent_request():
+    try:
+        request_id = request.form.get('request_id')
+        action = request.form.get('action')  # 'accept' or 'reject'
+        print(request_id)
+        equivalent_request = EquivalentRequest.query.get(request_id)
+
+        if action == 'accept':
+            equivalent_request.eqr_accepted = 1
+        elif action == 'reject':
+            equivalent_request.eqr_accepted = -1
+
+        db.session.commit()
+        return jsonify({'success': True})
+
+    except Exception as e:
+        # Handle exceptions, e.g., log the error
+        print(f"Error updating equivalent request: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
 
 @main.route("/equivalents/add", methods=['POST'])
 @login_required
@@ -128,7 +164,8 @@ def get_alerts_with_user_info():
             'a_longitude': alert.a_longitude,
             'au_full_name': user.au_full_name,
             'au_email': user.au_email,
-            'au_mobile_number': user.au_mobile_number
+            'au_mobile_number': user.au_mobile_number,
+            'au_id': user.au_id
         })
 
     # Render the template with the alerts data

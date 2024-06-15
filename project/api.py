@@ -2,14 +2,53 @@ import uuid
 from flask import Blueprint, render_template, jsonify, redirect, session, url_for, request, current_app
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
+from project.project_utils import PointsUtils
 import base64
-from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest
 from . import db
 import json
 import os
 
 api = Blueprint('api', __name__)
 
+@api.route('/api/submit_equivalent_request', methods=['POST'])
+def submit_equivalent_request():
+    try:
+        data = request.get_json()
+        app_user_id = data.get('app_user_id')
+        eq_id = data.get('eq_id')
+
+        # Check if the AppUser exists
+        app_user = AppUser.query.get(app_user_id)
+        if not app_user:
+            return jsonify({"status": "error", "message": "App User not found"})
+
+        # Check if the Equivalent exists
+        equivalent = Equivalent.query.get(eq_id)
+        if not equivalent:
+            return jsonify({"status": "error", "message": "Equivalent not found"})
+
+        # Calculate total user points
+        total_user_points = PointsUtils.calculate_user_points(app_user_id)
+
+        # Check if user has enough points
+        if total_user_points < equivalent.eq_coins:
+            return jsonify({"status": "warning", "message": "Insufficient points"})
+        
+        # Create a new EquivalentRequest
+        equivalent_request = EquivalentRequest(
+            eq_id=eq_id,
+            au_id=app_user_id,
+            eqr_number_of_coins=equivalent.eq_coins
+        )
+        db.session.add(equivalent_request)
+        db.session.commit()
+
+        return jsonify({"status": "ok", "message": "Request submitted successfully"})
+    except Exception as e:
+        print(e)
+        return jsonify({"status": "error", "message": "Failed to submit equivalent request"})
+    
 @api.route('/api/get_equivalents', methods=['GET'])
 def get_equivalents():
     try:
@@ -375,30 +414,7 @@ def get_app_data():
 
     if user:
         # Calculate points
-        points_for_alerts = 0
-        points_for_confirmation = 0
-        points_for_close = 0
-
-        # Fetch all alerts for the user
-        alerts = Alert.query.filter_by(au_id=user_id).all()
-        for alert in alerts:
-            # Add points based on the alert's points
-            points_for_alerts += alert.a_points
-        
-        # Fetch all confirm alerts for the user
-        confirmations = AlertConfirm.query.filter_by(au_id=user_id).all()
-        for alert in confirmations:
-            # Add points based on the alert's points
-            points_for_confirmation += alert.acn_points
-        
-        # Fetch all close alerts for the user
-        closures = AlertClose.query.filter_by(au_id=user_id).all()
-        for alert in closures:
-            # Add points based on the alert's points
-            points_for_close += alert.acl_points
-
-        total_user_points = points_for_alerts + points_for_confirmation + points_for_close
-
+        total_user_points = PointsUtils.calculate_user_points(user_id)
 
         # Fetch all guides
         guides = Guide.query.all()

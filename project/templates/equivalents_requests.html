@@ -1,0 +1,109 @@
+{% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+       
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Equivalents Requests</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if equivalents_requests|length > 0 %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                        Equivalent Name
+                                        <!-- from equivalent table -->
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Image
+                                        <!-- from equivalent table -->
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Coins
+                                        <!-- from equivalent request table -->
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        User Name
+                                        <!-- from user table -->
+                                    </th>
+
+
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Action</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in equivalents_requests %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-sm font-weight-bold mb-0">{{ data.equivalent.eq_name }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <a href="{{ url_for('static', filename='uploads/equivalents/' ~ data.equivalent.eq_picture) }}"
+                                                    target="__blank">
+                                                    <img src="{{ url_for('static', filename='uploads/equivalents/' ~ data.equivalent.eq_picture) }}"
+                                                        alt="Equivalent Image"
+                                                        style="width: 50px; height: 50px; object-fit: cover;">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">
+                                            <!-- coins -->
+                                            {{ data.eqr_number_of_coins }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">
+                                            <!-- usrename -->
+                                            {{ data.app_user.au_full_name }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <!-- button for accept or reject -->
+                                        {% if data.eqr_accepted == 0 %}
+                                        <button class="btn btn-sm btn-success btnAcceptEquivalentRequest"
+                                            data-eqrid="{{ data.eqr_id }}" data-action="accept">Accept</button>
+                                        <button class="btn btn-sm btn-danger btnAcceptEquivalentRequest"
+                                            data-eqrid="{{ data.eqr_id }}" data-action="reject">Reject</button>
+                                        {% elif data.eqr_accepted == 1 %}
+                                        <p class="text-success">Accepted</p>
+                                        {% elif data.eqr_accepted == -1 %}
+                                        <p class="text-danger">Rejected</p>
+                                        {% endif %}
+
+
+                                    </td>
+
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h4 class="text-center">There are currently no data available.</h4>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

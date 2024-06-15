@@ -35,6 +35,17 @@ class Equivalent(db.Model):
     eq_coins = db.Column(db.Integer, nullable=False)
     eq_picture = db.Column(db.String(255), nullable=True)
 
+class EquivalentRequest(db.Model):
+    eqr_id = db.Column(db.Integer, primary_key=True)
+    eq_id = db.Column(db.Integer, db.ForeignKey('equivalent.eq_id'), nullable=False)
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    eqr_number_of_coins = db.Column(db.Integer, nullable=False)
+    eqr_accepted = db.Column(db.Integer, nullable=False, default=0)
+
+    equivalent = db.relationship('Equivalent', backref=db.backref('equivalent_requests', lazy=True))
+    app_user = db.relationship('AppUser', backref=db.backref('equivalent_requests', lazy=True))
+
+
 class Guide(db.Model):
     g_id = db.Column(db.Integer, primary_key=True)
     g_title = db.Column(db.String(255), nullable=False)
