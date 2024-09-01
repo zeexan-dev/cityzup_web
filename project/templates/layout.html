@@ -140,6 +140,24 @@
             <span class="nav-link-text ms-1">Equivalents Requests</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{url_for('main.quiz_mcqs')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                <style>
+                  svg {
+                    fill: #ffffff
+                  }
+                </style>
+                <path
+                  d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
+              </svg>
+
+            </div>
+            <span class="nav-link-text ms-1">Quiz (MCQ)</span>
+          </a>
+        </li>
         {% if 'user_id' in session and session['user_id'] == 1 %}
         <li class="nav-item">
           <a class="nav-link text-white" href="{{url_for('main.users')}}">
@@ -291,6 +309,128 @@
 
       });
 
+      /*
+      ==========================================================
+                              QUIZ MCQs
+      ==========================================================
+      */
+
+      // add quiz mcq
+      $(this).on("submit", "#formAddQuizMCQ", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.add_quiz_mcq')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formAddQuizMCQ')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
+
+      });
+      // edit quiz mcq
+      $(this).on("submit", "#formEditQuizMCQ", function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+          type: 'POST',
+          url: "{{url_for('main.edit_quiz_mcq')}}",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (json) {
+            console.log(json);
+            if (json.status == "ok") {
+              console.log('done');
+              $('#formEditQuizMCQ')[0].reset();
+              swal("Success!", json.message, "success");
+              setTimeout(function () {
+                location.reload();
+              }, 2000);
+            } else {
+              swal("Error!", json.message, json.status);
+            }
+
+          },
+          error: function (e) {
+
+          }
+        });
+
+      });
+
+      // delete quiz mcq
+      $('.deleteQuizMCQBtn').click(function () {
+        var qid = $(this).data('qid');
+        if (confirm("Are you sure you want to delete?")) {
+          // User clicked "Yes"
+          var formData = new FormData();
+          formData.append('qid', qid);
+          $.ajax({
+            type: 'POST',
+            url: "{{url_for('main.delete_quiz_mcq')}}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (r) {
+
+              setTimeout(function () {
+                location.reload();
+              }, 200);
+
+            },
+            error: function (e) {
+
+            }
+          });
+        } else {
+          // User clicked "No" or closed the confirmation box
+          // Do nothing or perform any other desired action
+        }
+      });
+
+      // open edit modal for quiz mcq
+      // Open edit modal
+      $(".openEditModalQuiz").click(function () {
+        var qid = $(this).data('qid');
+        var question = $(this).data('question');
+        var option1 = $(this).data('option1');
+        var option2 = $(this).data('option2');
+        var option3 = $(this).data('option3');
+        var option4 = $(this).data('option4');
+        var correct = $(this).data('correct');
+        var coins = $(this).data('coins');
+
+        // Set the values in the modal form fields
+        $("#quizQuestionEdit").val(question);
+        $("#quizOption1Edit").val(option1);
+        $("#quizOption2Edit").val(option2);
+        $("#quizOption3Edit").val(option3);
+        $("#quizOption4Edit").val(option4);
+        $("#quizCorrectOptionEdit").val(correct);
+        $("#quizCoinsEdit").val(coins);
+        $("#qid").val(qid);
+      });
 
 
       /* 
@@ -298,35 +438,35 @@
                                EQUIVALENTS
        ==========================================================
        */
-        // Event handler for accept/reject buttons
-    $('.btnAcceptEquivalentRequest').on('click', function () {
+      // Event handler for accept/reject buttons
+      $('.btnAcceptEquivalentRequest').on('click', function () {
         var requestId = $(this).data('eqrid');
         var action = $(this).data('action');
-        
+
         if (confirm("Are you sure you want to " + action + " this request?")) {
-            // AJAX request to update equivalent request
-            $.ajax({
-                type: 'POST',
-                url: "{{url_for('main.update_equivalent_request')}}",
-                data: {
-                    request_id: requestId,
-                    action: action
-                },
-                success: function (response) {
-                    if (response.success) {
-                        // Reload page on successful update
-                        location.reload();
-                    } else {
-                        alert('Failed to update request.');
-                    }
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                    alert('Failed to update request.');
-                }
-            });
+          // AJAX request to update equivalent request
+          $.ajax({
+            type: 'POST',
+            url: "{{url_for('main.update_equivalent_request')}}",
+            data: {
+              request_id: requestId,
+              action: action
+            },
+            success: function (response) {
+              if (response.success) {
+                // Reload page on successful update
+                location.reload();
+              } else {
+                alert('Failed to update request.');
+              }
+            },
+            error: function (error) {
+              console.error('Error:', error);
+              alert('Failed to update request.');
+            }
+          });
         }
-    });
+      });
 
 
       // add equivalent

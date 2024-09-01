@@ -29,6 +29,19 @@ class User(db.Model, UserMixin):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
+class QuizMCQ(db.Model):
+    qm_id = db.Column(db.Integer, primary_key=True)
+    qm_question = db.Column(db.String(255), nullable=False)  # Question text
+    qm_option_1 = db.Column(db.String(255), nullable=False)  # Option 1
+    qm_option_2 = db.Column(db.String(255), nullable=False)  # Option 2
+    qm_option_3 = db.Column(db.String(255), nullable=False)  # Option 3
+    qm_option_4 = db.Column(db.String(255), nullable=False)  # Option 4
+    qm_correct_option = db.Column(db.Integer, nullable=False)  # Index of correct option (1, 2, 3, or 4)
+    qm_coins = db.Column(db.Integer, nullable=False)  # Coins for the quiz
+    qm_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
+
+
 class Equivalent(db.Model):    
     eq_id = db.Column(db.Integer, primary_key=True)
     eq_name = db.Column(db.String(255), nullable=False)
