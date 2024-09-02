@@ -30,17 +30,23 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class QuizMCQ(db.Model):
-    qm_id = db.Column(db.Integer, primary_key=True)
-    qm_question = db.Column(db.String(255), nullable=False)  # Question text
-    qm_option_1 = db.Column(db.String(255), nullable=False)  # Option 1
-    qm_option_2 = db.Column(db.String(255), nullable=False)  # Option 2
-    qm_option_3 = db.Column(db.String(255), nullable=False)  # Option 3
-    qm_option_4 = db.Column(db.String(255), nullable=False)  # Option 4
-    qm_correct_option = db.Column(db.Integer, nullable=False)  # Index of correct option (1, 2, 3, or 4)
-    qm_coins = db.Column(db.Integer, nullable=False)  # Coins for the quiz
-    qm_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
+class MissionMCQ(db.Model):
+    q_id = db.Column(db.Integer, primary_key=True)
+    q_question = db.Column(db.String(255), nullable=False)  # Question text
+    q_option_1 = db.Column(db.String(255), nullable=False)  # Option 1
+    q_option_2 = db.Column(db.String(255), nullable=False)  # Option 2
+    q_option_3 = db.Column(db.String(255), nullable=False)  # Option 3
+    q_option_4 = db.Column(db.String(255), nullable=False)  # Option 4
+    q_correct_option = db.Column(db.Integer, nullable=False)  # Index of correct option (1, 2, 3, or 4)
+    q_coins = db.Column(db.Integer, nullable=False)  # Coins for the quiz
+    q_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
 
+class MissionAction(db.Model):
+    ma_id = db.Column(db.Integer, primary_key=True)
+    ma_text = db.Column(db.String(255), nullable=False)  # Action text
+    ma_url =  db.Column(db.String(255), nullable=False) # Action URL
+    ma_coins = db.Column(db.Integer, nullable=False)  # Coins for the Action
+    ma_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
 
 class Equivalent(db.Model):    
     eq_id = db.Column(db.Integer, primary_key=True)

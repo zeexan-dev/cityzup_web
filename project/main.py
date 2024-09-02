@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, render_template, jsonify, redirect, se
 from flask_login import login_user, logout_user, login_required
 
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, QuizMCQ
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction
 from . import db
 import json
 import os
@@ -27,21 +27,122 @@ def home():
     page_title = 'Recent Cities'
     return render_template('home.html', guides=guides, page_title=page_title, title=title)
 
-# ================================= QUIZ MCQ =========================
-@main.route("/quiz_mcqs")
+# ================================= MISSION ACTION =========================
+@main.route("/mission_actions")
 @login_required  # Ensure the user is logged in
-def quiz_mcqs():
+def mission_actions():
+    # Query to get all mission actions
+    missions = MissionAction.query.order_by(MissionAction.ma_id.desc()).all()
+
+    title = 'Mission Action'
+    page_title = 'Mission Action'
+    return render_template('mission_action.html', missions=missions, page_title=page_title, title=title)
+
+
+@main.route('/mission_actions/add', methods=['POST'])
+@login_required  # Assuming you want to restrict this to logged-in users
+def add_mission_action():
+    try:
+        # Get form data
+        mission_text = request.form.get('mission_text')
+        mission_url = request.form.get('mission_url')
+        coins = request.form.get('mission_coins')
+
+        # Validate the input (add more validation as needed)
+        if not mission_text or not mission_url or not coins:
+            return jsonify({'status': 'error', 'message': 'All fields are required'})
+
+        # Create a new MissionMCQ instance
+        new = MissionAction(
+            ma_text=mission_text,
+            ma_url=mission_url,
+            ma_coins=int(coins)  # Assuming coins is an integer
+        )
+
+        # Add to the database
+        db.session.add(new)
+        db.session.commit()
+
+        return jsonify({'status': 'ok', 'message': 'Mission added successfully'}), 200
+
+    except Exception as e:
+        # Handle any errors that may occur
+        print(f"Error adding Mission: {str(e)}")
+        db.session.rollback()  # Rollback in case of any errors
+        return jsonify({'status': 'error', 'message': 'An error occurred while adding the mission'}), 500
+    
+
+@main.route('/mission_actions/edit', methods=['POST'])
+@login_required
+def edit_mission_action():
+    # Retrieve data from the request
+    id = request.form.get('id')
+    mission_text = request.form.get('mission_text')
+    mission_url = request.form.get('mission_url')
+    mission_coins = request.form.get('mission_coins')
+
+    # Validate the input (add more validation as needed)
+    if not mission_text or not mission_url or not mission_coins:
+        return jsonify({'status': 'error', 'message': 'All fields are required'})
+
+    # Find the quiz entry by ID
+    mission = MissionAction.query.get(id)
+    
+    if mission:
+        # Update the mission entry with new data
+        mission.ma_text = mission_text
+        mission.ma_url = mission_url
+        mission.ma_coins = int(mission_coins)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return jsonify({"status": "ok", "message": "Mission updated successfully!"})
+    else:
+        return jsonify({"status": "warning", "message": "Mission not found."})
+
+@main.route('/mission_actions/delete', methods=['POST'])
+@login_required
+def delete_mission_action():
+    # Get the mission ID from the form data
+    id = request.form.get('id')
+
+    if not id:
+        return jsonify({'status': 'error', 'message': 'Mission ID not provided'}), 400
+
+    try:
+        # Fetch the mission by ID
+        mission = MissionAction.query.get(id)
+
+        if not mission:
+            return jsonify({'status': 'error', 'message': 'Mission not found'}), 404
+
+        # Delete the mission from the database
+        db.session.delete(mission)
+        db.session.commit()
+
+        return jsonify({'status': 'ok', 'message': 'Mission deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# ================================= MISSION MCQ =========================
+@main.route("/mission_mcqs")
+@login_required  # Ensure the user is logged in
+def mission_mcqs():
     # Query to get all quiz mcqs
-    quizzes = QuizMCQ.query.order_by(QuizMCQ.qm_id.desc()).all()
+    quizzes = MissionMCQ.query.order_by(MissionMCQ.q_id.desc()).all()
 
     title = 'Quiz MCQs'
     page_title = 'Quiz MCQs'
-    return render_template('quiz_mcq.html', quizzes=quizzes, page_title=page_title, title=title)
+    return render_template('mission_mcq.html', quizzes=quizzes, page_title=page_title, title=title)
 
 
-@main.route('/quiz_mcqs/add', methods=['POST'])
+@main.route('/mission_mcqs/add', methods=['POST'])
 @login_required  # Assuming you want to restrict this to logged-in users
-def add_quiz_mcq():
+def add_mission_mcq():
     try:
         # Get form data
         question_text = request.form.get('question_text')
@@ -56,33 +157,33 @@ def add_quiz_mcq():
         if not question_text or not option1 or not option2 or not option3 or not option4 or not correct_option or not coins:
             return jsonify({'status': 'error', 'message': 'All fields are required'})
 
-        # Create a new QuizMCQ instance
-        new_quiz_mcq = QuizMCQ(
-            qm_question=question_text,
-            qm_option_1=option1,
-            qm_option_2=option2,
-            qm_option_3=option3,
-            qm_option_4=option4,
-            qm_correct_option=int(correct_option),
-            qm_coins=int(coins)  # Assuming coins is an integer
+        # Create a new MissionMCQ instance
+        new = MissionMCQ(
+            q_question=question_text,
+            q_option_1=option1,
+            q_option_2=option2,
+            q_option_3=option3,
+            q_option_4=option4,
+            q_correct_option=int(correct_option),
+            q_coins=int(coins)  # Assuming coins is an integer
         )
 
         # Add to the database
-        db.session.add(new_quiz_mcq)
+        db.session.add(new)
         db.session.commit()
 
         return jsonify({'status': 'ok', 'message': 'Quiz added successfully'}), 200
 
     except Exception as e:
         # Handle any errors that may occur
-        print(f"Error adding QuizMCQ: {str(e)}")
+        print(f"Error adding MissionMCQ: {str(e)}")
         db.session.rollback()  # Rollback in case of any errors
         return jsonify({'status': 'error', 'message': 'An error occurred while adding the quiz'}), 500
     
 
-@main.route('/quiz_mcqs/edit', methods=['POST'])
+@main.route('/mission_mcqs/edit', methods=['POST'])
 @login_required
-def edit_quiz_mcq():
+def edit_mission_mcq():
     # Retrieve data from the request
     qid = request.form.get('qid')
     question_text = request.form.get('question_text')
@@ -98,17 +199,17 @@ def edit_quiz_mcq():
         return jsonify({'status': 'error', 'message': 'All fields are required'})
 
     # Find the quiz entry by ID
-    quiz = QuizMCQ.query.get(qid)
+    quiz = MissionMCQ.query.get(qid)
     
     if quiz:
         # Update the quiz entry with new data
-        quiz.qm_question = question_text
-        quiz.qm_option_1 = option_1
-        quiz.qm_option_2 = option_2
-        quiz.qm_option_3 = option_3
-        quiz.qm_option_4 = option_4
-        quiz.qm_correct_option = int(correct_option)
-        quiz.qm_coins = int(quiz_coins)
+        quiz.q_question = question_text
+        quiz.q_option_1 = option_1
+        quiz.q_option_2 = option_2
+        quiz.q_option_3 = option_3
+        quiz.q_option_4 = option_4
+        quiz.q_correct_option = int(correct_option)
+        quiz.q_coins = int(quiz_coins)
 
         # Commit the changes to the database
         db.session.commit()
@@ -117,11 +218,9 @@ def edit_quiz_mcq():
     else:
         return jsonify({"status": "warning", "message": "Quiz not found."})
 
-
-
-@main.route('/quiz_mcqs/delete', methods=['POST'])
+@main.route('/mission_mcqs/delete', methods=['POST'])
 @login_required
-def delete_quiz_mcq():
+def delete_mission_mcq():
     # Get the quiz ID from the form data
     qid = request.form.get('qid')
 
@@ -130,7 +229,7 @@ def delete_quiz_mcq():
 
     try:
         # Fetch the quiz by ID
-        quiz = QuizMCQ.query.get(qid)
+        quiz = MissionMCQ.query.get(qid)
 
         if not quiz:
             return jsonify({'status': 'error', 'message': 'Quiz not found'}), 404
