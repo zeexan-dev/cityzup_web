@@ -2,7 +2,8 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-sm-12">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionAction">Add Action</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionAction">Add
+                Action</button>
         </div>
     </div>
     <div class="row">
@@ -21,15 +22,15 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                         Mission Text</th>
-                                        <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
-                                            Mission URL</th>
-                                        <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Mission URL</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
                                         Coins</th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for mission in mission %}
+                                {% for mission in missions %}
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
@@ -44,23 +45,20 @@
                                     <td>
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.ma_coins }}</p>
                                     </td>
-                                    <!-- <td class="align-middle">
-                                        <a href="#" 
-                                        data-qid="{{ mission.ma_id }}" 
-                                        data-text="{{ mission.ma_text }}"
-                                        data-url="{{ mission.ma_url }}"  
-                                        data-coins="{{ mission.ma_coins }}"
-                                            data-bs-toggle="modal" data-bs-target="#modalEditMAction"
-                                            class="openEditModalMAction">
+                                    <td class="align-middle">
+                                        <a href="#" data-id="{{ mission.ma_id }}" data-text="{{ mission.ma_text }}"
+                                            data-url="{{ mission.ma_url }}" data-coins="{{ mission.ma_coins }}"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditMissionAction"
+                                            class="openEditModalMissionAction">
                                             <i class="fa-solid fa-pen-to-square fa-lg icon-dark"></i>
                                         </a>
                                         &nbsp; &nbsp;
                                         <a href="#" data-qid="{{ mission.ma_id }}"
-                                            class="text-secondary font-weight-bold text-sm deleteMActionBtn"
+                                            class="text-secondary font-weight-bold text-sm deleteMissionActionBtn"
                                             data-toggle="tooltip" data-original-title="Delete">
                                             <i class="fa-solid fa-trash fa-lg icon-dark"></i>
                                         </a>
-                                    </td> -->
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -99,7 +97,7 @@
                         <input type="text" class="form-control" name="mission_url" required>
                     </div>
 
-                
+
                     <!-- Coins for Mission -->
                     <div class="input-group input-group-outline mb-3">
                         <label class="form-label">Coins for Mission</label>
@@ -119,7 +117,8 @@
 
 
 <!-- Edit Action Modal -->
-<div class="modal fade" id="modalEditAction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditMissionAction" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -128,53 +127,26 @@
             </div>
             <div class="modal-body">
                 <form action="#" id="formEditMissionAction">
-                    <!-- Question Text -->
+                    <!-- Mission Text -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Question Text</label>
-                        <input type="text" class="form-control" name="question_text" id="quizQuestionEdit" required>
+                        <label class="form-label">Mission Text</label>
+                        <input type="text" class="form-control" name="mission_text" id="mission_action_text_edit" required>
                     </div>
 
-                    <!-- Option 1 -->
+                    <!-- Mission URL  -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Option 1</label>
-                        <input type="text" class="form-control" name="option_1" id="quizOption1Edit" required>
+                        <label class="form-label">Mission URL</label>
+                        <input type="text" class="form-control" name="mission_url" id="mission_action_url_edit" required>
                     </div>
 
-                    <!-- Option 2 -->
+
+                    <!-- Coins for Mission -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Option 2</label>
-                        <input type="text" class="form-control" name="option_2" id="quizOption2Edit" required>
+                        <label class="form-label">Coins for Mission</label>
+                        <input type="number" class="form-control" name="mission_coins" id="mission_action_coins_edit" required>
                     </div>
 
-                    <!-- Option 3 -->
-                    <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Option 3</label>
-                        <input type="text" class="form-control" name="option_3" id="quizOption3Edit" required>
-                    </div>
-
-                    <!-- Option 4 -->
-                    <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Option 4</label>
-                        <input type="text" class="form-control" name="option_4" id="quizOption4Edit" required>
-                    </div>
-
-                    <!-- Correct Option Dropdown -->
-                    <div class="input-group input-group-outline mb-3">
-                        <select class="form-control" name="correct_option" id="quizCorrectOptionEdit" required>
-                            <option value="" disabled>Select correct option</option>
-                            <option value="1">Option 1</option>
-                            <option value="2">Option 2</option>
-                            <option value="3">Option 3</option>
-                            <option value="4">Option 4</option>
-                        </select>
-                    </div>
-
-                    <!-- Coins for Quiz -->
-                    <div class="input-group input-group-outline mb-3 focused is-focused">
-                        <label class="form-label">Coins for Quiz</label>
-                        <input type="number" class="form-control" name="quiz_coins" id="quizCoinsEdit" required>
-                    </div>
-                    <input type="hidden" name="qid" value="" id="qid">
+                    <input type="hidden" name="id" value="" id="mission_action_id_edit">
                     <div class="mt-3">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <input type="submit" value="Update" class="btn btn-primary">

@@ -329,7 +329,7 @@
 
       /*
       ==========================================================
-                              QUIZ MCQs
+                              Mission Action
       ==========================================================
       */
 
@@ -429,26 +429,18 @@
 
       // open edit modal for quiz mcq
       // Open edit modal
-      $(".openEditModalMA").click(function () {
-        var qid = $(this).data('qid');
-        var question = $(this).data('question');
-        var option1 = $(this).data('option1');
-        var option2 = $(this).data('option2');
-        var option3 = $(this).data('option3');
-        var option4 = $(this).data('option4');
-        var correct = $(this).data('correct');
+      //  open edit modal
+      $(".openEditModalMissionAction").click(function () {
+        var id = $(this).data('id');
+        var text = $(this).data('text');
+        var url = $(this).data('url');
         var coins = $(this).data('coins');
-
-        // Set the values in the modal form fields
-        $("#quizQuestionEdit").val(question);
-        $("#quizOption1Edit").val(option1);
-        $("#quizOption2Edit").val(option2);
-        $("#quizOption3Edit").val(option3);
-        $("#quizOption4Edit").val(option4);
-        $("#quizCorrectOptionEdit").val(correct);
-        $("#quizCoinsEdit").val(coins);
-        $("#qid").val(qid);
+        $("#mission_action_text_edit").val(text);
+        $("#mission_action_url_edit").val(url);
+        $("#mission_action_coins_edit").val(coins);
+        $("#mission_action_id_edit").val(id);
       });
+
 
 
 
