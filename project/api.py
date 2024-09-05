@@ -4,12 +4,39 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from project.project_utils import PointsUtils
 import base64
-from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest, MissionAction
 from . import db
 import json
 import os
 
 api = Blueprint('api', __name__)
+
+@api.route('/api/get_mission_actions', methods=['GET'])
+def get_mission_actions():
+    try:
+        # Fetch all mission actions from the database
+        mission_actions = MissionAction.query.all()
+
+        # Prepare a list to store mission action data
+        mission_actions_data = []
+
+        # Convert each mission action object to a dictionary
+        for action in mission_actions:
+            action_data = {
+                'ma_id': action.ma_id,              # Action ID
+                'ma_text': action.ma_text,          # Action text
+                'ma_url': action.ma_url,            # Action URL
+                'ma_coins': action.ma_coins,        # Coins for the action
+                'ma_created_at': action.ma_created_at.strftime('%Y-%m-%d %H:%M:%S')  # Format the creation timestamp
+            }
+            mission_actions_data.append(action_data)
+
+        return jsonify({'status': 'ok', 'mission_actions': mission_actions_data})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+
 
 @api.route('/api/submit_equivalent_request', methods=['POST'])
 def submit_equivalent_request():
