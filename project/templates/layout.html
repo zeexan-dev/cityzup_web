@@ -379,7 +379,7 @@
             console.log(json);
             if (json.status == "ok") {
               console.log('done');
-              $('#formEditQuizMCQ')[0].reset();
+              $('#formEditMissionAction')[0].reset();
               swal("Success!", json.message, "success");
               setTimeout(function () {
                 location.reload();
@@ -398,14 +398,14 @@
 
       // delete quiz mcq
       $('.deleteMissionActionBtn').click(function () {
-        var qid = $(this).data('qid');
+        var id = $(this).data('maid');
         if (confirm("Are you sure you want to delete?")) {
           // User clicked "Yes"
           var formData = new FormData();
-          formData.append('qid', qid);
+          formData.append('id', id);
           $.ajax({
             type: 'POST',
-            url: "{{url_for('main.delete_mission_mcq')}}",
+            url: "{{url_for('main.delete_mission_action')}}",
             data: formData,
             cache: false,
             contentType: false,
