@@ -20,7 +20,10 @@ def get_mission_actions():
         # Prepare a list to store mission action data
         mission_actions_data = []
 
-        # Convert each mission action object to a dictionary
+        # Initialize a variable to store the total coins
+        total_coins = 0
+
+        # Convert each mission action object to a dictionary and calculate total coins
         for action in mission_actions:
             action_data = {
                 'ma_id': action.ma_id,              # Action ID
@@ -31,10 +34,19 @@ def get_mission_actions():
             }
             mission_actions_data.append(action_data)
 
-        return jsonify({'status': 'ok', 'mission_actions': mission_actions_data})
+            # Add the coins of the current action to the total coins
+            total_coins += action.ma_coins
+
+        # Return the mission actions and the total coins
+        return jsonify({
+            'status': 'ok',
+            'mission_actions': mission_actions_data,
+            'total_coins': total_coins  # Include total coins in the response
+        })
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
+
 
 
 
