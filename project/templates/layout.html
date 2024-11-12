@@ -173,9 +173,10 @@
               </svg>
 
             </div>
-            <span class="nav-link-text ms-1">Mission (Action)</span>
+            <span class="nav-link-text ms-1">Mission Action</span>
           </a>
         </li>
+      
         {% if 'user_id' in session and session['user_id'] == 1 %}
         <li class="nav-item">
           <a class="nav-link text-white" href="{{url_for('main.users')}}">

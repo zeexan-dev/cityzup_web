@@ -4,6 +4,11 @@
         <div class="col-sm-12">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionAction">Add
                 Action</button>
+
+            <a class="btn btn-success" href="{{url_for('main.completed_missions')}}">
+
+                Completed Mission
+            </a>
         </div>
     </div>
     <div class="row">
@@ -130,20 +135,23 @@
                     <!-- Mission Text -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
                         <label class="form-label">Mission Text</label>
-                        <input type="text" class="form-control" name="mission_text" id="mission_action_text_edit" required>
+                        <input type="text" class="form-control" name="mission_text" id="mission_action_text_edit"
+                            required>
                     </div>
 
                     <!-- Mission URL  -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
                         <label class="form-label">Mission URL</label>
-                        <input type="text" class="form-control" name="mission_url" id="mission_action_url_edit" required>
+                        <input type="text" class="form-control" name="mission_url" id="mission_action_url_edit"
+                            required>
                     </div>
 
 
                     <!-- Coins for Mission -->
                     <div class="input-group input-group-outline mb-3 focused is-focused">
                         <label class="form-label">Coins for Mission</label>
-                        <input type="number" class="form-control" name="mission_coins" id="mission_action_coins_edit" required>
+                        <input type="number" class="form-control" name="mission_coins" id="mission_action_coins_edit"
+                            required>
                     </div>
 
                     <input type="hidden" name="id" value="" id="mission_action_id_edit">

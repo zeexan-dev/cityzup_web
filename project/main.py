@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, render_template, jsonify, redirect, se
 from flask_login import login_user, logout_user, login_required
 import uuid
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign, MissionActionsCompleted
 from . import db
 import json
 import os
@@ -32,6 +32,17 @@ def home():
 
 
 # ================================= MISSION ACTION =========================
+
+@main.route('/completed_mission_actions')
+@login_required
+def completed_missions():
+    # Query all completed mission actions with user data
+    completed_missions = MissionActionsCompleted.query.join(AppUser).all()
+
+    # Pass the data to the template
+    return render_template('mission_action_completed.html', missions=completed_missions)
+
+
 @main.route('/toggle_campaign_status/<int:campaign_id>', methods=['POST'])
 @login_required
 def toggle_campaign_status(campaign_id):
