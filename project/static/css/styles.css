@@ -1,6 +1,25 @@
-.navbar-vertical.navbar-expand-xs .navbar-collapse{
+/* Define styles for active and inactive cards */
+.card-active {
+  border: 2px solid #28a745;
+  /* Green border for active */
+  background-color: #d4edda;
+  /* Light green background */
+}
+
+.card-inactive {
+  border: 2px solid #dc3545;
+  /* Red border for inactive */
+  background-color: #f8d7da;
+  /* Light red background */
+}
+
+
+
+
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
   height: auto;
 }
+
 .bg-gradient-primary {
   background-image: linear-gradient(195deg, #536dfe 0%, #536dfe 100%);
 }
@@ -63,9 +82,10 @@
   min-height: 50px;
 }
 
-p.zone-points{
+p.zone-points {
   font-size: 14px;
 }
-p.road-points{
+
+p.road-points {
   font-size: 14px;
 }

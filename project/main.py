@@ -1,8 +1,8 @@
-from flask import Blueprint, current_app, render_template, jsonify, redirect, session, url_for, request
+from flask import Blueprint, current_app, render_template, jsonify, redirect, session, url_for, request, flash
 from flask_login import login_user, logout_user, login_required
-
+import uuid
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign
 from . import db
 import json
 import os
@@ -22,12 +22,31 @@ def home():
                       .group_by(Guide.g_id) \
                       .order_by(Guide.g_id.desc()) \
                       .all()
+    
+    # Query to get all campaigns
+    campaigns = db.session.query(MissionCampaign).all()  # Adjust if you need specific fields
 
-    title = 'Dashboard'
-    page_title = 'Recent Cities'
-    return render_template('home.html', guides=guides, page_title=page_title, title=title)
+    page_title = 'Dashboard'
+    return render_template('home.html', guides=guides, campaigns=campaigns, page_title=page_title)
+
+
 
 # ================================= MISSION ACTION =========================
+@main.route('/toggle_campaign_status/<int:campaign_id>', methods=['POST'])
+@login_required
+def toggle_campaign_status(campaign_id):
+    campaign = MissionCampaign.query.get(campaign_id)
+    if campaign:
+        # Toggle the status
+        campaign.mc_status = False if campaign.mc_status == True else True
+        db.session.commit()
+        flash('Campaign status updated successfully!', 'success')
+    else:
+        flash('Campaign not found.', 'danger')
+    return redirect(url_for('main.home'))
+
+
+
 @main.route("/mission_actions")
 @login_required  # Ensure the user is logged in
 def mission_actions():

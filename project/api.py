@@ -4,16 +4,56 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from project.project_utils import PointsUtils
 import base64
-from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest, MissionAction
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest, MissionAction, MissionCampaign, MissionActionsCompleted
 from . import db
 import json
 import os
 
 api = Blueprint('api', __name__)
 
+@api.route('/api/mission_action_completed', methods=['POST'])
+def mission_action_completed():
+    # Get data from the request
+    user_id = request.form.get('user_id')
+
+    # Validate input
+    if not (user_id):
+        return jsonify({'status': 'error', 'message': 'Invalid user'})
+
+    # Check if the user exists based on email or mobile number
+    user = AppUser.query.filter((AppUser.au_id == user_id)).first()
+
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Invalid user'})
+    
+    # Calculate the total coins from all mission actions
+    total_coins = db.session.query(db.func.sum(MissionAction.ma_coins)).scalar() or 0
+
+    # Insert a record into MissionActionsCompleted
+    mission_completed = MissionActionsCompleted(
+        au_id=user_id,
+        total_coins=total_coins
+    )
+    db.session.add(mission_completed)
+    db.session.commit()
+
+    # Successful authentication
+    return jsonify({'status': 'ok', 'message': f'{total_coins} Mission Coins Granted'})
+
 @api.route('/api/get_mission_actions', methods=['GET'])
 def get_mission_actions():
     try:
+        # Check the status of the mission_action campaign
+        mission_action_campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Action').first()
+
+        # If the campaign is inactive, return an empty list
+        if mission_action_campaign is None or not mission_action_campaign.mc_status:
+            return jsonify({
+                'status': 'ok',
+                'mission_actions': [],
+                'total_coins': 0  # Total coins is 0 since no actions are available
+            })
+
         # Fetch all mission actions from the database
         mission_actions = MissionAction.query.all()
 
@@ -27,6 +67,7 @@ def get_mission_actions():
         for action in mission_actions:
             action_data = {
                 'ma_id': action.ma_id,              # Action ID
+                'ma_unique_id': action.ma_unique_id,              # Action ID
                 'ma_text': action.ma_text,          # Action text
                 'ma_url': action.ma_url,            # Action URL
                 'ma_coins': action.ma_coins,        # Coins for the action

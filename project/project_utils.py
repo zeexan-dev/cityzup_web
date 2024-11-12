@@ -1,7 +1,8 @@
 import random
 import string
 import time
-from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest
+from . import db
+from .models import AlertClose, AlertConfirm, Guide, Zone, Road, ZonePoint, RoadPoint, AppUser, Alert, Equivalent, EquivalentRequest, MissionActionsCompleted
 class FileUtils:
     @staticmethod
     def generate_unique_filename(filename):
@@ -32,6 +33,7 @@ class PointsUtils:
         points_for_confirmation = 0
         points_for_close = 0
         points_deducted = 0
+        points_for_mission_action_completed = 0 
 
         # Fetch all alerts for the user
         alerts = Alert.query.filter_by(au_id=user_id).all()
@@ -51,6 +53,10 @@ class PointsUtils:
             # Add points based on the alert closure's points
             points_for_close += close.acl_points
 
+        # Fetch all mission action points for the user
+        mission_action_points = db.session.query(db.func.sum(MissionActionsCompleted.total_coins)) \
+                                          .filter_by(au_id=user_id).scalar() or 0
+        
         # Fetch all equivalent requests for the user where eqr_accepted is 0 or 1
         # 0 pending
         # 1 accepted
@@ -60,5 +66,5 @@ class PointsUtils:
             points_deducted += request.eqr_number_of_coins
 
         
-        total_user_points = points_for_alerts + points_for_confirmation + points_for_close - points_deducted
+        total_user_points = points_for_alerts + points_for_confirmation + points_for_close + mission_action_points - points_deducted
         return total_user_points

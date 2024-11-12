@@ -280,6 +280,29 @@
 
 
   <script src="{{url_for('static',filename='js/sweetalert.min.js')}}"></script>
+  
+  <!-- flash message -->
+  
+  <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <script>
+    // Render the last message into JavaScript variables
+    var lastMessageCategory = "{{ messages[-1][0].capitalize() }}"; // Capitalize the category
+    var lastMessageText = "{{ messages[-1][1] }}"; // The message
+    var lastMessageIcon = "{{ messages[-1][0] }}"; // Set the icon based on the category
+
+    // Call SweetAlert with the last message
+    swal({
+      title: lastMessageCategory + "!",  // Capitalized category
+      text: lastMessageText,               // The message
+      icon: lastMessageIcon,                // Set the icon based on the category
+      button: "Okay",
+    });
+
+  </script>
+  {% endif %}
+  {% endwith %} -->
+
 
 
 

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
+import uuid
 
 
 class AppUser(db.Model):
@@ -30,6 +31,12 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class MissionCampaign(db.Model):    
+    mc_id = db.Column(db.Integer, primary_key=True)
+    mc_campaign_type = db.Column(db.String, nullable=False)  # 'action', 'mcq', 'video quiz', 'paparazzi'
+    mc_status = db.Column(db.Boolean, default=False)  # True if active, False if inactive
+
+
 class MissionMCQ(db.Model):
     q_id = db.Column(db.Integer, primary_key=True)
     q_question = db.Column(db.String(255), nullable=False)  # Question text
@@ -43,10 +50,19 @@ class MissionMCQ(db.Model):
 
 class MissionAction(db.Model):
     ma_id = db.Column(db.Integer, primary_key=True)
+    ma_unique_id = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     ma_text = db.Column(db.String(255), nullable=False)  # Action text
     ma_url =  db.Column(db.String(255), nullable=False) # Action URL
     ma_coins = db.Column(db.Integer, nullable=False)  # Coins for the Action
     ma_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
+
+class MissionActionsCompleted(db.Model):    
+    mac_id = db.Column(db.Integer, primary_key=True)
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    total_coins = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('AppUser', backref=db.backref('missions_completed', lazy=True))
 
 class Equivalent(db.Model):    
     eq_id = db.Column(db.Integer, primary_key=True)
@@ -155,4 +171,24 @@ class AlertClose(db.Model):
 def insert_default_user(*args, **kwargs):
     default_user = User(u_username='admin', u_password=generate_password_hash('admin', method='pbkdf2:sha256'))
     db.session.add(default_user)
+    db.session.commit()
+
+def insert_default_campaigns():
+    # Define the default campaigns
+    default_campaigns = [
+        {'mc_campaign_type': 'Mission Action', 'mc_status': False},
+        {'mc_campaign_type': 'Mission MCQ', 'mc_status': False},
+        {'mc_campaign_type': 'Mission Video Quiz', 'mc_status': False},
+        {'mc_campaign_type': 'Mission Paparazzi', 'mc_status': False}
+    ]
+
+    for campaign in default_campaigns:
+        # Check if the campaign already exists
+        existing_campaign = MissionCampaign.query.filter_by(mc_campaign_type=campaign['mc_campaign_type']).first()
+        if not existing_campaign:
+            # If it does not exist, create a new one
+            new_campaign = MissionCampaign(mc_campaign_type=campaign['mc_campaign_type'], mc_status=campaign['mc_status'])
+            db.session.add(new_campaign)
+
+    # Commit the changes to the database
     db.session.commit()
