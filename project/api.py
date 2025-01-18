@@ -38,6 +38,9 @@ def mission_action_completed():
     db.session.commit()
 
     # Successful authentication
+    if total_coins == 0:
+        return jsonify({'status': 'error', 'message': f'Mission campaign ended. 0 coins granted'})
+    # Successful authentication
     return jsonify({'status': 'ok', 'message': f'{total_coins} Mission Coins Granted'})
 
 @api.route('/api/get_mission_actions', methods=['GET'])

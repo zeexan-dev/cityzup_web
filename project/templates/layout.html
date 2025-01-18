@@ -176,7 +176,7 @@
             <span class="nav-link-text ms-1">Mission (Action)</span>
           </a>
         </li>
-      
+
         {% if 'user_id' in session and session['user_id'] == 1 %}
         <li class="nav-item">
           <a class="nav-link text-white" href="{{url_for('main.users')}}">
@@ -281,9 +281,9 @@
 
 
   <script src="{{url_for('static',filename='js/sweetalert.min.js')}}"></script>
-  
+
   <!-- flash message -->
-  
+
   <!-- {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
   <script>
@@ -383,7 +383,8 @@
 
           },
           error: function (e) {
-
+            let response = JSON.parse(e.responseText); // Parse the JSON response
+            swal("Cannot Add!", response.message, response.status);
           }
         });
 
@@ -414,7 +415,8 @@
 
           },
           error: function (e) {
-
+            let response = JSON.parse(e.responseText); // Parse the JSON response
+            swal("Cannot Update!", response.message, response.status);
           }
         });
 
@@ -442,7 +444,9 @@
 
             },
             error: function (e) {
-
+              // Handle error response
+              let response = JSON.parse(e.responseText); // Parse the JSON response
+              swal("Cannot Delete!", response.message, "warning");
             }
           });
         } else {

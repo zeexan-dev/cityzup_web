@@ -40,6 +40,23 @@
     <!-- Campaigns Section -->
     <h3>Mission Campaigns</h3>
     <div class="row">
+        <div class="col-sm-12">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="alert-container">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row">
         {% if campaigns|length == 0 %}
         <div class="col-sm-12">
             <h4 class="text-center">No campaigns are currently active.</h4>

@@ -48,10 +48,23 @@ def completed_missions():
 def toggle_campaign_status(campaign_id):
     campaign = MissionCampaign.query.get(campaign_id)
     if campaign:
-        # Toggle the status
-        campaign.mc_status = False if campaign.mc_status == True else True
+
+        # Check if the campaign being toggled is "Mission Action" and is being deactivated
+        if campaign.mc_campaign_type == "Mission Action" and campaign.mc_status:
+            # Deactivate the campaign
+            campaign.mc_status = False
+
+            # Delete all missions from the MissionAction table
+            MissionAction.query.delete()  # Deletes all rows in MissionAction table
+
+            flash('Campaign deactivated, and all associated missions have been deleted.', 'warning')
+
+        else:
+            # Toggle the campaign status
+            campaign.mc_status = not campaign.mc_status
+            status_message = 'activated' if campaign.mc_status else 'deactivated'
+            flash(f'Campaign status {status_message} successfully!', 'success')
         db.session.commit()
-        flash('Campaign status updated successfully!', 'success')
     else:
         flash('Campaign not found.', 'danger')
     return redirect(url_for('main.home'))
@@ -73,6 +86,13 @@ def mission_actions():
 @login_required  # Assuming you want to restrict this to logged-in users
 def add_mission_action():
     try:
+
+        # Check if the associated campaign is active
+        campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Action').first()
+        if campaign and campaign.mc_status:
+            return jsonify({'status': 'warning', 'message': 'Mission cannot be added because the campaign is already active'}), 403
+        
+
         # Get form data
         mission_text = request.form.get('mission_text')
         mission_url = request.form.get('mission_url')
@@ -119,6 +139,12 @@ def edit_mission_action():
     mission = MissionAction.query.get(id)
     
     if mission:
+
+        # Check if the associated campaign is active
+        campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Action').first()
+        if campaign and campaign.mc_status:
+            return jsonify({'status': 'warning', 'message': 'Mission cannot be updated because the campaign is active'}), 403
+        
         # Update the mission entry with new data
         mission.ma_text = mission_text
         mission.ma_url = mission_url
@@ -127,9 +153,9 @@ def edit_mission_action():
         # Commit the changes to the database
         db.session.commit()
 
-        return jsonify({"status": "ok", "message": "Mission updated successfully!"})
+        return jsonify({"status": "ok", "message": "Mission updated successfully!"}), 200
     else:
-        return jsonify({"status": "warning", "message": "Mission not found."})
+        return jsonify({"status": "warning", "message": "Mission not found."}), 404
 
 @main.route('/mission_actions/delete', methods=['POST'])
 @login_required
@@ -146,6 +172,11 @@ def delete_mission_action():
 
         if not mission:
             return jsonify({'status': 'error', 'message': 'Mission not found'}), 404
+        
+        # Check if the associated campaign is active
+        campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Action').first()
+        if campaign and campaign.mc_status:
+            return jsonify({'status': 'warning', 'message': 'Mission cannot be deleted because the campaign is active'}), 403
 
         # Delete the mission from the database
         db.session.delete(mission)
