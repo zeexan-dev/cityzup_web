@@ -1,0 +1,191 @@
+{% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionPaparazzi">Add
+                Mission</button>
+
+            <a class="btn btn-success" href="{{url_for('main.completed_missions')}}">
+
+                Completed Mission
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Mission - Paparazzi</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                        Mission Text</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Mission Location</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Coins</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-sm font-weight-bold mb-0"></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0"></p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0"></p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="#" data-id="" data-text="" data-url="" data-coins=""
+                                            data-bs-toggle="modal" data-bs-target="#modalEditMissionAction"
+                                            class="openEditModalMissionAction">
+                                            <i class="fa-solid fa-pen-to-square fa-lg icon-dark"></i>
+                                        </a>
+                                        &nbsp; &nbsp;
+                                        <a href="#" data-maid=""
+                                            class="text-secondary font-weight-bold text-sm deleteMissionActionBtn"
+                                            data-toggle="tooltip" data-original-title="Delete">
+                                            <i class="fa-solid fa-trash fa-lg icon-dark"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4 class="text-center">There are currently no mission available.</h4>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Paparazzi Mission Modal -->
+<div class="modal fade" id="modalAddMissionPaparazzi" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Add Mission Paparazzi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddMissionPaparazzi">
+                    <!-- Task Message -->
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="form-label">Task Description</label>
+                        <input type="text" class="form-control" name="task_description" required>
+                    </div>
+
+                    <!-- Google Map -->
+                    <div class="mb-3">
+                        <div id="map" style="height: 400px; width: 100%;"></div>
+                    </div>
+
+                    <!-- Radius -->
+                    <div class="mb-3">
+                        <label class="form-label">Radius (meters)</label>
+                        <div class="d-flex align-items-center">
+                            <input type="range" class="form-range" min="100" max="2000" step="50" id="radiusSlider"
+                                value="100">
+                            <span class="ms-3" id="radiusValue">100</span> meters
+                        </div>
+                    </div>
+
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let map, marker, circle;
+
+    function initMap() {
+        const initialPosition = { lat: 46.57982112060782, lng: 2.198373631240953 }; // Default location
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: initialPosition,
+            zoom: 6,
+        });
+
+        // Log the zoom level whenever the user zooms in or out
+        map.addListener("zoom_changed", () => {
+            const currentZoom = map.getZoom();
+            console.log("Current Zoom Level:", currentZoom);
+        });
+
+
+        // Default radius
+        const defaultRadius = 500;
+
+        // Map click event to place marker and circle
+        map.addListener("click", (event) => {
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+
+            // Set zoom to 15
+            map.setZoom(15);
+
+            // Clear existing marker and circle
+            if (marker) marker.setMap(null);
+            if (circle) circle.setMap(null);
+
+            // Place new marker
+            marker = new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+            });
+
+            // Place new circle with default radius
+            circle = new google.maps.Circle({
+                map: map,
+                center: { lat, lng },
+                radius: defaultRadius,
+                fillColor: "#AA0000",
+                fillOpacity: 0.35,
+                strokeColor: "#AA0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+            });
+
+            // Update slider to match default radius
+            document.getElementById("radiusSlider").value = defaultRadius;
+            document.getElementById("radiusValue").textContent = defaultRadius;
+        });
+    }
+
+    // Event listener for the radius slider
+    document.getElementById("radiusSlider").addEventListener("input", (event) => {
+        const radius = parseFloat(event.target.value) || 0;
+
+        // Update radius display
+        document.getElementById("radiusValue").textContent = radius;
+
+        // Update circle radius if it exists
+        if (circle) {
+            circle.setRadius(radius);
+        }
+    });
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7ETvkEkOXVHYkyjwVptBgzrvqp399eig&callback=initMap" async
+    defer></script>
+
+{% endblock %}

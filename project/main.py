@@ -30,7 +30,16 @@ def home():
     return render_template('home.html', guides=guides, campaigns=campaigns, page_title=page_title)
 
 
+# ================================= MISSION PAPARAZZI ========================
+@main.route("/mission_paparazzi")
+@login_required  # Ensure the user is logged in
+def mission_paparazzi():
+    # Query to get all mission actions
+    # missions = MissionAction.query.order_by(MissionAction.ma_id.desc()).all()
 
+    title = 'Mission Paparazzi'
+    page_title = 'Mission Paparazzi'
+    return render_template('mission_paparazzi.html', page_title=page_title, title=title)
 # ================================= MISSION ACTION =========================
 
 @main.route('/completed_mission_actions')
