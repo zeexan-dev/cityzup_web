@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, render_template, jsonify, redirect, se
 from flask_login import login_user, logout_user, login_required
 import uuid
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign, MissionActionsCompleted
+from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign, MissionActionsCompleted, MissionPaparazzi
 from . import db
 import json
 import os
@@ -40,6 +40,48 @@ def mission_paparazzi():
     title = 'Mission Paparazzi'
     page_title = 'Mission Paparazzi'
     return render_template('mission_paparazzi.html', page_title=page_title, title=title)
+
+
+@main.route('/mission_paparazzi/add', methods=['POST'])
+@login_required  # Assuming you want to restrict this to logged-in users
+def add_mission_paparazzi():
+    try:
+
+        # Check if the associated campaign is active
+        campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Paparazzi').first()
+        if campaign and campaign.mc_status:
+            return jsonify({'status': 'warning', 'message': 'Mission cannot be added because the campaign is already active'}), 403
+        
+
+        # Get form data
+        mission_text = request.form.get('mission_text')
+        mission_lat = request.form.get('mission_lat')
+        mission_lng = request.form.get('mission_lng')
+        mission_coins = request.form.get('mission_coins')
+
+        # Validate the input
+        if not mission_text or not mission_lat or not mission_lng or not mission_coins:
+            return jsonify({'status': 'error', 'message': 'All fields are required'})
+
+        # Create a new MissionPaparazzi instance
+        new_mission = MissionPaparazzi(
+            mp_text=mission_text,
+            mp_lat=mission_lat,
+            mp_lng=mission_lng,
+            mp_coins=int(mission_coins)
+        )
+
+        # Add to the database
+        db.session.add(new_mission)
+        db.session.commit()
+
+        return jsonify({'status': 'ok', 'message': 'Mission added successfully'}), 200
+
+    except Exception as e:
+        # Handle any errors that may occur
+        print(f"Error adding Mission: {str(e)}")
+        db.session.rollback()  # Rollback in case of any errors
+        return jsonify({'status': 'error', 'message': 'An error occurred while adding the mission'}), 500
 # ================================= MISSION ACTION =========================
 
 @main.route('/completed_mission_actions')

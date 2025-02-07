@@ -87,13 +87,25 @@
                     <!-- Task Message -->
                     <div class="input-group input-group-outline mb-3">
                         <label class="form-label">Task Description</label>
-                        <input type="text" class="form-control" name="task_description" required>
+                        <input type="text" class="form-control" name="mission_text" required>
+                    </div>
+
+                    <!-- Coins -->
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="form-label">Coins</label>
+                        <input type="number" class="form-control" name="mission_coins" required>
                     </div>
 
                     <!-- Google Map -->
                     <div class="mb-3">
                         <div id="map" style="height: 400px; width: 100%;"></div>
                     </div>
+
+                    <!-- Hidden fields to store lat/lng -->
+                    <input type="hidden" id="lat" name="mission_lat">
+                    <input type="hidden" id="lng" name="mission_lng">
+
+
 
                     <!-- Radius -->
                     <div class="mb-3">
@@ -140,6 +152,12 @@
             const lat = event.latLng.lat();
             const lng = event.latLng.lng();
 
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+
+            // Set the map center to the clicked location
+            map.setCenter({ lat, lng });
+
             // Set zoom to 15
             map.setZoom(15);
 
@@ -164,6 +182,7 @@
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
             });
+
 
             // Update slider to match default radius
             document.getElementById("radiusSlider").value = defaultRadius;
