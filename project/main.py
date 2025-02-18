@@ -31,15 +31,47 @@ def home():
 
 
 # ================================= MISSION PAPARAZZI ========================
+@main.route('/mission_paparazzi/delete', methods=['POST'])
+@login_required
+def delete_mission_paparazzi():
+    # Get the mission ID from the form data
+    id = request.form.get('id')
+
+    if not id:
+        return jsonify({'status': 'error', 'message': 'Mission ID not provided'}), 400
+
+    try:
+        # Fetch the mission by ID
+        mission = MissionPaparazzi.query.get(id)
+
+        if not mission:
+            return jsonify({'status': 'error', 'message': 'Mission not found'}), 404
+        
+        # Check if the associated campaign is active
+        campaign = MissionCampaign.query.filter_by(mc_campaign_type='Mission Paparazzi').first()
+        if campaign and campaign.mc_status:
+            return jsonify({'status': 'warning', 'message': 'Mission cannot be deleted because the campaign is active'}), 403
+
+        # Delete the mission from the database
+        db.session.delete(mission)
+        db.session.commit()
+
+        return jsonify({'status': 'ok', 'message': 'Mission deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+
 @main.route("/mission_paparazzi")
 @login_required  # Ensure the user is logged in
 def mission_paparazzi():
     # Query to get all mission actions
-    # missions = MissionAction.query.order_by(MissionAction.ma_id.desc()).all()
+    missions = MissionPaparazzi.query.order_by(MissionPaparazzi.mp_id.desc()).all()
 
     title = 'Mission Paparazzi'
     page_title = 'Mission Paparazzi'
-    return render_template('mission_paparazzi.html', page_title=page_title, title=title)
+    return render_template('mission_paparazzi.html', page_title=page_title, title=title, missions=missions)
 
 
 @main.route('/mission_paparazzi/add', methods=['POST'])
@@ -57,6 +89,7 @@ def add_mission_paparazzi():
         mission_text = request.form.get('mission_text')
         mission_lat = request.form.get('mission_lat')
         mission_lng = request.form.get('mission_lng')
+        mission_radius = request.form.get('mission_radius')
         mission_coins = request.form.get('mission_coins')
 
         # Validate the input
@@ -68,6 +101,7 @@ def add_mission_paparazzi():
             mp_text=mission_text,
             mp_lat=mission_lat,
             mp_lng=mission_lng,
+            mp_radius=mission_radius,
             mp_coins=int(mission_coins)
         )
 

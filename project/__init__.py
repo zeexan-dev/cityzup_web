@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 # from flask_cors import CORS
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -28,5 +29,7 @@ def create_app():
     # Ensure the 'equivalents' folder exists
     equivalents_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'equivalents')
     os.makedirs(equivalents_folder, exist_ok=True)
+
+    migrate = Migrate(app, db)  # Make sure Migrate is initialized
 
     return app

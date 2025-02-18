@@ -21,32 +21,40 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
+                        {% if missions|length > 0 %}
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                         Mission Text</th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
-                                        Mission Location</th>
+                                        Location</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Radius</th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
                                         Coins</th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for mission in missions %}
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-bold mb-0"></p>
+                                                <p class="text-sm font-weight-bold mb-0">{{ mission.mp_text }}</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0"></p>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.mp_lat }},{{ mission.mp_lng
+                                            }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0"></p>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.mp_radius }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.mp_coins }}</p>
                                     </td>
                                     <td class="align-middle">
                                         <a href="#" data-id="" data-text="" data-url="" data-coins=""
@@ -55,16 +63,19 @@
                                             <i class="fa-solid fa-pen-to-square fa-lg icon-dark"></i>
                                         </a>
                                         &nbsp; &nbsp;
-                                        <a href="#" data-maid=""
-                                            class="text-secondary font-weight-bold text-sm deleteMissionActionBtn"
+                                        <a href="#" data-mpid="{{ mission.mp_id }}"
+                                            class="text-secondary font-weight-bold text-sm deleteMissionPaparazziBtn"
                                             data-toggle="tooltip" data-original-title="Delete">
                                             <i class="fa-solid fa-trash fa-lg icon-dark"></i>
                                         </a>
                                     </td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
+                        {% else %}
                         <h4 class="text-center">There are currently no mission available.</h4>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -111,7 +122,7 @@
                     <div class="mb-3">
                         <label class="form-label">Radius (meters)</label>
                         <div class="d-flex align-items-center">
-                            <input type="range" class="form-range" min="100" max="2000" step="50" id="radiusSlider"
+                            <input type="range" name="mission_radius" class="form-range" min="100" max="2000" step="50" id="radiusSlider"
                                 value="100">
                             <span class="ms-3" id="radiusValue">100</span> meters
                         </div>

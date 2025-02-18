@@ -51,10 +51,11 @@ class MissionMCQ(db.Model):
 class MissionPaparazzi(db.Model):
     mp_id = db.Column(db.Integer, primary_key=True)
     mp_unique_id = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
-    mp_text = db.Column(db.String(255), nullable=False)  # Action text
-    mp_lat =  db.Column(db.String(255), nullable=False) # Action URL
+    mp_text = db.Column(db.String(255), nullable=False)  
+    mp_lat =  db.Column(db.String(255), nullable=False) 
     mp_lng =  db.Column(db.String(255), nullable=False)
-    mp_coins = db.Column(db.Integer, nullable=False)  # Coins for the Action
+    mp_radius =  db.Column(db.String(255), nullable=False)
+    mp_coins = db.Column(db.Integer, nullable=False)  
     mp_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
 
 class MissionAction(db.Model):
