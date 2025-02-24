@@ -1,0 +1,10 @@
+[
+  {
+    "type": "sqlite",
+    "path": "d:\\venvs\\cityzup_web\\database_online.db"
+  },
+  {
+    "type": "sqlite",
+    "path": "d:\\venvs\\cityzup_web\\database_online_copy.db"
+  }
+]

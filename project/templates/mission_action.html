@@ -3,9 +3,9 @@
     <div class="row">
         <div class="col-sm-12">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionAction">Add
-                Action</button>
+                Mission</button>
 
-            <a class="btn btn-success" href="{{url_for('main.completed_missions')}}">
+            <a class="btn btn-success" href="{{url_for('main.completed_mission_actions')}}">
 
                 Completed Mission
             </a>
@@ -51,13 +51,13 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.ma_coins }}</p>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="#" data-id="{{ mission.ma_id }}" data-text="{{ mission.ma_text }}"
+                                        <!-- <a href="#" data-id="{{ mission.ma_id }}" data-text="{{ mission.ma_text }}"
                                             data-url="{{ mission.ma_url }}" data-coins="{{ mission.ma_coins }}"
                                             data-bs-toggle="modal" data-bs-target="#modalEditMissionAction"
                                             class="openEditModalMissionAction">
                                             <i class="fa-solid fa-pen-to-square fa-lg icon-dark"></i>
                                         </a>
-                                        &nbsp; &nbsp;
+                                        &nbsp; &nbsp; -->
                                         <a href="#" data-maid="{{ mission.ma_id }}"
                                             class="text-secondary font-weight-bold text-sm deleteMissionActionBtn"
                                             data-toggle="tooltip" data-original-title="Delete">

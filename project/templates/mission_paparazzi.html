@@ -5,7 +5,7 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMissionPaparazzi">Add
                 Mission</button>
 
-            <a class="btn btn-success" href="{{url_for('main.completed_missions')}}">
+            <a class="btn btn-success" href="{{url_for('main.completed_mission_paparazzi')}}">
 
                 Completed Mission
             </a>
@@ -57,12 +57,12 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.mp_coins }}</p>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="#" data-id="" data-text="" data-url="" data-coins=""
+                                        <!-- <a href="#" data-id="" data-text="" data-url="" data-coins=""
                                             data-bs-toggle="modal" data-bs-target="#modalEditMissionAction"
                                             class="openEditModalMissionAction">
                                             <i class="fa-solid fa-pen-to-square fa-lg icon-dark"></i>
                                         </a>
-                                        &nbsp; &nbsp;
+                                        &nbsp; &nbsp; -->
                                         <a href="#" data-mpid="{{ mission.mp_id }}"
                                             class="text-secondary font-weight-bold text-sm deleteMissionPaparazziBtn"
                                             data-toggle="tooltip" data-original-title="Delete">

@@ -58,6 +58,14 @@ class MissionPaparazzi(db.Model):
     mp_coins = db.Column(db.Integer, nullable=False)  
     mp_created_at = db.Column(db.DateTime, default=db.func.now())  # Timestamp for when the quiz is created
 
+class MissionPaparazziCompleted(db.Model):    
+    mpc_id = db.Column(db.Integer, primary_key=True)
+    au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
+    total_coins = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('AppUser', backref=db.backref('mission_paparazzi_completed', lazy=True))
+
 class MissionAction(db.Model):
     ma_id = db.Column(db.Integer, primary_key=True)
     ma_unique_id = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
@@ -72,7 +80,7 @@ class MissionActionsCompleted(db.Model):
     total_coins = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    user = db.relationship('AppUser', backref=db.backref('missions_completed', lazy=True))
+    user = db.relationship('AppUser', backref=db.backref('mission_actions_completed', lazy=True))
 
 class Equivalent(db.Model):    
     eq_id = db.Column(db.Integer, primary_key=True)

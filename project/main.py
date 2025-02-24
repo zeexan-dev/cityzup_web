@@ -31,6 +31,17 @@ def home():
 
 
 # ================================= MISSION PAPARAZZI ========================
+
+@main.route('/completed_mission_paparazzi')
+@login_required
+def completed_mission_paparazzi():
+    # Query all completed mission actions with user data
+    completed_missions = MissionActionsCompleted.query.join(AppUser).all()
+
+    # Pass the data to the template
+    return render_template('mission_paparazzi_completed.html', missions=completed_missions)
+
+
 @main.route('/mission_paparazzi/delete', methods=['POST'])
 @login_required
 def delete_mission_paparazzi():
@@ -120,7 +131,7 @@ def add_mission_paparazzi():
 
 @main.route('/completed_mission_actions')
 @login_required
-def completed_missions():
+def completed_mission_actions():
     # Query all completed mission actions with user data
     completed_missions = MissionActionsCompleted.query.join(AppUser).all()
 
