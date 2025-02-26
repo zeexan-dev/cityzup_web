@@ -87,6 +87,7 @@ class Equivalent(db.Model):
     eq_name = db.Column(db.String(255), nullable=False)
     eq_coins = db.Column(db.Integer, nullable=False)
     eq_picture = db.Column(db.String(255), nullable=True)
+    eq_created_at = db.Column(db.DateTime, default=db.func.now())
 
 class EquivalentRequest(db.Model):
     eqr_id = db.Column(db.Integer, primary_key=True)
@@ -155,6 +156,9 @@ class Alert(db.Model):
     # Foreign key relationship with AppUser
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
     app_user = db.relationship('AppUser', backref=db.backref('alerts', lazy=True))
+
+    # Timestamp for when the alert is created
+    a_created_at = db.Column(db.DateTime, default=db.func.now())
    
 class AlertConfirm(db.Model):
     acn_id = db.Column(db.Integer, primary_key=True)
