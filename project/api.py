@@ -29,12 +29,83 @@ from .models import (
     MissionCampaign,
     MissionActionsCompleted,
     MissionPaparazzi,
+    MissionPaparazziCompleted,
 )
 from . import db
 import json
 import os
 
 api = Blueprint("api", __name__)
+
+@api.route("/api/mission_paparazzi_completed", methods=["POST"])
+def mission_paparazzi_completed():
+
+     # Parse JSON data
+    data = request.get_json()
+
+    user_id = data.get("userId")
+    missions = data.get("missions", [])  # Get mission list (default to empty list if not present)
+
+    # Validate input
+    if not (user_id):
+        return jsonify({"status": "error", "message": "Invalid user"})
+
+    # Check if the user exists based on email or mobile number
+    user = AppUser.query.filter((AppUser.au_id == user_id)).first()
+    if not user:
+        return jsonify({"status": "error", "message": "Invalid user"})
+    
+
+    total_coins = 0  # Initialize total coins count
+
+    for mission in missions:
+        mp_unique_id = mission.get("mp_unique_id")
+        photo_base64 = mission.get("photo")
+        coins = mission.get("coins", 0)
+        mission_text = mission.get("text", "")
+
+        # Decode Base64 image
+        if photo_base64:
+            try:
+                photo_data = base64.b64decode(photo_base64)
+                # Save the image to a unique folder for each user
+                folder = os.path.join(
+                    current_app.config["UPLOAD_FOLDER"], "mission_paparazzi"
+                )
+                os.makedirs(folder, exist_ok=True)
+
+                # Generate a unique filename
+                image_fileName = f"missionpap_{mp_unique_id}_{user_id}_{uuid.uuid4()}.jpg"
+                image_filePath = os.path.join(folder, image_fileName)
+
+                with open(image_filePath, "wb") as f:
+                    f.write(photo_data)
+            except Exception as e:
+                return jsonify({"status": "error", "message": f"Failed to save image: {str(e)}"}), 500
+
+        # Accumulate total coins
+        total_coins += coins
+
+        # Insert mission record into the database
+        mission_completed = MissionPaparazziCompleted(
+            au_id=user_id,
+            mpc_unique_mission_id=mp_unique_id,
+            mpc_coins=coins,
+            mpc_text=mission_text,
+            mpc_photo_path=image_filePath if photo_base64 else None,  # Save path if photo exists
+        )
+        db.session.add(mission_completed)
+
+    # Commit all mission records to the database
+    db.session.commit()
+
+    # Successful authentication
+    if total_coins == 0:
+        return jsonify(
+            {"status": "error", "message": f"Mission campaign ended. 0 coins granted"}
+        )
+    # Successful authentication
+    return jsonify({"status": "ok", "message": f"{total_coins} Mission Coins Granted"})
 
 
 @api.route("/api/get_mission_paparazzi", methods=["GET"])

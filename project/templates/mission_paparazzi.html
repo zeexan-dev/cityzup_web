@@ -122,8 +122,8 @@
                     <div class="mb-3">
                         <label class="form-label">Radius (meters)</label>
                         <div class="d-flex align-items-center">
-                            <input type="range" name="mission_radius" class="form-range" min="100" max="2000" step="50" id="radiusSlider"
-                                value="100">
+                            <input type="range" name="mission_radius" class="form-range" min="100" max="2000" step="50"
+                                id="radiusSlider" value="100">
                             <span class="ms-3" id="radiusValue">100</span> meters
                         </div>
                     </div>
@@ -142,7 +142,8 @@
     let map, marker, circle;
 
     function initMap() {
-        const initialPosition = { lat: 46.57982112060782, lng: 2.198373631240953 }; // Default location
+        // const initialPosition = { lat: 46.57982112060782, lng: 2.198373631240953 };
+        const initialPosition = { lat: 33.69635548130057, lng: 73.05053401663656 }; // g8 location
         map = new google.maps.Map(document.getElementById("map"), {
             center: initialPosition,
             zoom: 6,
