@@ -60,12 +60,14 @@ class MissionPaparazzi(db.Model):
 
 class MissionPaparazziCompleted(db.Model):    
     mpc_id = db.Column(db.Integer, primary_key=True)
+    mpc_unique_id = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
-    mpc_unique_mission_id = db.Column(db.String(50), nullable=False)  # Store mission ID
+    mp_unique_id = db.Column(db.String(50), nullable=False)  # Store mission ID
     mpc_photo_path = db.Column(db.String(255), nullable=True)  # Store image path
     mpc_coins = db.Column(db.Integer, nullable=False, default=0)  # Coins for this mission
     mpc_text = db.Column(db.Text, nullable=True)  # Store mission description
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    mpc_status = db.Column(db.Integer, nullable=True, default=0)  # 0 = Pending, 1 = Accepted, -1 = Rejected
     
     user = db.relationship('AppUser', backref=db.backref('mission_paparazzi_completed', lazy=True))
 

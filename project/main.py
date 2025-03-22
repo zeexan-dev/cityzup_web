@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, render_template, jsonify, redirect, se
 from flask_login import login_user, logout_user, login_required
 import uuid
 from project.project_utils import FileUtils
-from .models import Equivalent, Guide, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign, MissionActionsCompleted, MissionPaparazzi
+from .models import Equivalent, Guide, MissionPaparazziCompleted, Zone, Road, ZonePoint, RoadPoint, Alert, AppUser, EquivalentRequest, MissionMCQ, MissionAction, MissionCampaign, MissionActionsCompleted, MissionPaparazzi
 from . import db
 import json
 import os
@@ -32,14 +32,27 @@ def home():
 
 # ================================= MISSION PAPARAZZI ========================
 
+@main.route('/update_mission_status/<string:mpc_unique_id>', methods=['POST'])
+@login_required
+def update_comp_mission_pap_status(mpc_unique_id):
+    mission = MissionPaparazziCompleted.query.filter_by(mpc_unique_id=mpc_unique_id).first_or_404()
+    new_status = int(request.form.get('status'))
+    mission.mpc_status = new_status
+    db.session.commit()
+    flash("Mission status updated!", "success")
+    return redirect(url_for('main.completed_mission_paparazzi'))
+
+
+
 @main.route('/completed_mission_paparazzi')
 @login_required
 def completed_mission_paparazzi():
     # Query all completed mission actions with user data
-    completed_missions = MissionActionsCompleted.query.join(AppUser).all()
+    completed_missions = MissionPaparazziCompleted.query.join(AppUser).all()
 
     # Pass the data to the template
     return render_template('mission_paparazzi_completed.html', missions=completed_missions)
+
 
 
 @main.route('/mission_paparazzi/delete', methods=['POST'])

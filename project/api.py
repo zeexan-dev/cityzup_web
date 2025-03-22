@@ -89,10 +89,10 @@ def mission_paparazzi_completed():
         # Insert mission record into the database
         mission_completed = MissionPaparazziCompleted(
             au_id=user_id,
-            mpc_unique_mission_id=mp_unique_id,
+            mp_unique_id=mp_unique_id,
             mpc_coins=coins,
             mpc_text=mission_text,
-            mpc_photo_path=image_filePath if photo_base64 else None,  # Save path if photo exists
+            mpc_photo_path=image_fileName if photo_base64 else None,  # Save path if photo exists
         )
         db.session.add(mission_completed)
 

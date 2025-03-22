@@ -18,8 +18,13 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">User</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Coins Earned</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Mission</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Photo</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Coins</th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Completed At</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Status</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Action</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,11 +39,38 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0">{{ mission.total_coins }}</p>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.mpc_text }}</p>
+                                    </td>
+                                    <td>
+                                        {% if mission.mpc_photo_path %}
+                                        <img src="{{ url_for('static', filename='uploads/mission_paparazzi/' + mission.mpc_photo_path) }}" 
+                                             alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
+                                        {% else %}
+                                        <p class="text-sm text-secondary">No Photo</p>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.mpc_coins }}</p>
                                     </td>
                                     <td>
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
                                     </td>
+                                    <td>
+                                        {% if mission.mpc_status == 1 %}
+                                        <span class="badge bg-success">Accepted</span>
+                                        {% elif mission.mpc_status == -1 %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('main.update_comp_mission_pap_status', mpc_unique_id=mission.mpc_unique_id) }}">
+                                            <button type="submit" name="status" value="1" class="btn btn-success btn-sm">Accept</button>
+                                            <button type="submit" name="status" value="-1" class="btn btn-danger btn-sm">Reject</button>
+                                        </form>
+                                    </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
