@@ -743,7 +743,7 @@ def add_equivalent():
 @login_required
 def get_alerts_with_user_info():
     # Query alerts with user information
-    alerts_with_user_info = db.session.query(Alert, AppUser).join(AppUser).all()
+    alerts_with_user_info = db.session.query(Alert, AppUser).join(AppUser).order_by(Alert.a_created_at.desc()).all()
 
     # Extract the relevant information from the query results
     result = []
