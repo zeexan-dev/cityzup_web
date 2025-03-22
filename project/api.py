@@ -37,14 +37,17 @@ import os
 
 api = Blueprint("api", __name__)
 
+
 @api.route("/api/mission_paparazzi_completed", methods=["POST"])
 def mission_paparazzi_completed():
 
-     # Parse JSON data
+    # Parse JSON data
     data = request.get_json()
 
     user_id = data.get("userId")
-    missions = data.get("missions", [])  # Get mission list (default to empty list if not present)
+    missions = data.get(
+        "missions", []
+    )  # Get mission list (default to empty list if not present)
 
     # Validate input
     if not (user_id):
@@ -54,15 +57,22 @@ def mission_paparazzi_completed():
     user = AppUser.query.filter((AppUser.au_id == user_id)).first()
     if not user:
         return jsonify({"status": "error", "message": "Invalid user"})
-    
 
-    total_coins = 0  # Initialize total coins count
+    # Calculate the total coins from all mission actions
+    total_coins = (
+        db.session.query(db.func.sum(MissionPaparazzi.mp_coins)).scalar() or 0
+    )
+
+    if total_coins == 0:
+        return jsonify(
+            {"status": "error", "message": f"Mission campaign ended. 0 coins granted"}
+        )
 
     for mission in missions:
         mp_unique_id = mission.get("mp_unique_id")
         photo_base64 = mission.get("photo")
         coins = mission.get("coins", 0)
-        mission_text = mission.get("text", "")
+        mission_text = mission.get("mission_text", "")
 
         # Decode Base64 image
         if photo_base64:
@@ -75,13 +85,23 @@ def mission_paparazzi_completed():
                 os.makedirs(folder, exist_ok=True)
 
                 # Generate a unique filename
-                image_fileName = f"missionpap_{mp_unique_id}_{user_id}_{uuid.uuid4()}.jpg"
+                image_fileName = (
+                    f"missionpap_{mp_unique_id}_{user_id}_{uuid.uuid4()}.jpg"
+                )
                 image_filePath = os.path.join(folder, image_fileName)
 
                 with open(image_filePath, "wb") as f:
                     f.write(photo_data)
             except Exception as e:
-                return jsonify({"status": "error", "message": f"Failed to save image: {str(e)}"}), 500
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"Failed to save image: {str(e)}",
+                        }
+                    ),
+                    500,
+                )
 
         # Accumulate total coins
         total_coins += coins
@@ -92,14 +112,15 @@ def mission_paparazzi_completed():
             mp_unique_id=mp_unique_id,
             mpc_coins=coins,
             mpc_text=mission_text,
-            mpc_photo_path=image_fileName if photo_base64 else None,  # Save path if photo exists
+            mpc_photo_path=(
+                image_fileName if photo_base64 else None
+            ),  # Save path if photo exists
         )
         db.session.add(mission_completed)
 
     # Commit all mission records to the database
     db.session.commit()
 
-    # Successful authentication
     if total_coins == 0:
         return jsonify(
             {"status": "error", "message": f"Mission campaign ended. 0 coins granted"}
@@ -190,16 +211,16 @@ def mission_action_completed():
     # Calculate the total coins from all mission actions
     total_coins = db.session.query(db.func.sum(MissionAction.ma_coins)).scalar() or 0
 
+    if total_coins == 0:
+        return jsonify(
+            {"status": "error", "message": f"Mission campaign ended. 0 coins granted"}
+        )
+
     # Insert a record into MissionActionsCompleted
     mission_completed = MissionActionsCompleted(au_id=user_id, total_coins=total_coins)
     db.session.add(mission_completed)
     db.session.commit()
 
-    # Successful authentication
-    if total_coins == 0:
-        return jsonify(
-            {"status": "error", "message": f"Mission campaign ended. 0 coins granted"}
-        )
     # Successful authentication
     return jsonify({"status": "ok", "message": f"{total_coins} Mission Coins Granted"})
 

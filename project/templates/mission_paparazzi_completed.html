@@ -17,14 +17,21 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">User</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Mission</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Photo</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Coins</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Completed At</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Status</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Action</th>
-                                    
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">User
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Mission</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Photo</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Coins</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Completed At</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Status</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Action</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,7 +40,8 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-bold mb-0">{{ mission.user.au_full_name }}</p>
+                                                <p class="text-sm font-weight-bold mb-0">{{ mission.user.au_full_name }}
+                                                </p>
                                                 <p class="text-sm text-secondary mb-0">{{ mission.user.au_email }}</p>
                                             </div>
                                         </div>
@@ -43,8 +51,8 @@
                                     </td>
                                     <td>
                                         {% if mission.mpc_photo_path %}
-                                        <img src="{{ url_for('static', filename='uploads/mission_paparazzi/' + mission.mpc_photo_path) }}" 
-                                             alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
+                                        <img src="{{ url_for('static', filename='uploads/mission_paparazzi/' + mission.mpc_photo_path) }}"
+                                            alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
                                         {% else %}
                                         <p class="text-sm text-secondary">No Photo</p>
                                         {% endif %}
@@ -53,7 +61,13 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.mpc_coins }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0">{{ mission.created_at.strftime('%Y-%m-%d') }}</p>
+                                        <p class="text-sm font-weight-bold mb-0">
+                                            {% if mission.mpc_created_at %}
+                                            {{ mission.mpc_created_at.strftime('%Y-%m-%d') }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
+                                        </p>
                                     </td>
                                     <td>
                                         {% if mission.mpc_status == 1 %}
@@ -65,12 +79,15 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ url_for('main.update_completed_mission_pap_status', mpc_unique_id=mission.mpc_unique_id) }}">
-                                            <button type="submit" name="status" value="1" class="btn btn-success btn-sm">Accept</button>
-                                            <button type="submit" name="status" value="-1" class="btn btn-danger btn-sm">Reject</button>
+                                        <form method="POST"
+                                            action="{{ url_for('main.update_completed_mission_pap_status', mpc_unique_id=mission.mpc_unique_id) }}">
+                                            <button type="submit" name="status" value="1"
+                                                class="btn btn-success btn-sm">Accept</button>
+                                            <button type="submit" name="status" value="-1"
+                                                class="btn btn-danger btn-sm">Reject</button>
                                         </form>
                                     </td>
-                                    
+
                                 </tr>
                                 {% endfor %}
                             </tbody>

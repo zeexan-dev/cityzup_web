@@ -66,7 +66,7 @@ class MissionPaparazziCompleted(db.Model):
     mpc_photo_path = db.Column(db.String(255), nullable=True)  # Store image path
     mpc_coins = db.Column(db.Integer, nullable=False, default=0)  # Coins for this mission
     mpc_text = db.Column(db.Text, nullable=True)  # Store mission description
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    mpc_created_at = db.Column(db.DateTime, default=datetime.utcnow)
     mpc_status = db.Column(db.Integer, nullable=True, default=0)  # 0 = Pending, 1 = Accepted, -1 = Rejected
     
     user = db.relationship('AppUser', backref=db.backref('mission_paparazzi_completed', lazy=True))
@@ -83,7 +83,7 @@ class MissionActionsCompleted(db.Model):
     mac_id = db.Column(db.Integer, primary_key=True)
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
     total_coins = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    mac_created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('AppUser', backref=db.backref('mission_actions_completed', lazy=True))
 

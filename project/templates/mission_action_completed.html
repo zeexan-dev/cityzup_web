@@ -17,9 +17,12 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">User</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Coins Earned</th>
-                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Completed At</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">User
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Coins Earned</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Completed At</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,7 +31,8 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-bold mb-0">{{ mission.user.au_full_name }}</p>
+                                                <p class="text-sm font-weight-bold mb-0">{{ mission.user.au_full_name }}
+                                                </p>
                                                 <p class="text-sm text-secondary mb-0">{{ mission.user.au_email }}</p>
                                             </div>
                                         </div>
@@ -37,7 +41,13 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.total_coins }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0">{{ mission.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                        <p class="text-sm font-weight-bold mb-0">
+                                            {% if mission.mac_created_at %}
+                                            {{ mission.mac_created_at.strftime('%Y-%m-%d %H:%M') }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
+                                        </p>
                                     </td>
                                 </tr>
                                 {% endfor %}

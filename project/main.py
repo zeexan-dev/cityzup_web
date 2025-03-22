@@ -86,7 +86,7 @@ def update_completed_mission_pap_status(mpc_unique_id):
 @login_required
 def completed_mission_paparazzi():
     # Query all completed mission actions with user data
-    completed_missions = MissionPaparazziCompleted.query.join(AppUser).all()
+    completed_missions = MissionPaparazziCompleted.query.join(AppUser).order_by(MissionPaparazziCompleted.mpc_id.desc()).all()
 
     # Pass the data to the template
     return render_template(
@@ -217,7 +217,7 @@ def add_mission_paparazzi():
 @login_required
 def completed_mission_actions():
     # Query all completed mission actions with user data
-    completed_missions = MissionActionsCompleted.query.join(AppUser).all()
+    completed_missions = MissionActionsCompleted.query.join(AppUser).order_by(MissionActionsCompleted.mac_created_at.desc()).all()
 
     # Pass the data to the template
     return render_template("mission_action_completed.html", missions=completed_missions)
@@ -239,6 +239,19 @@ def toggle_campaign_status(campaign_id):
 
             flash(
                 "Campaign deactivated, and all associated missions have been deleted.",
+                "warning",
+            )
+
+        # Check if the campaign being toggled is "Mission Paparazzi" and is being deactivated
+        elif campaign.mc_campaign_type == "Mission Paparazzi" and campaign.mc_status:
+            # Deactivate the campaign
+            campaign.mc_status = False
+
+            # Delete all missions from the MissionPaparazzi table
+            MissionPaparazzi.query.delete()  # Deletes all rows in MissionPaparazzi table
+
+            flash(
+                "Mission Paparazzi campaign deactivated, and all associated missions have been deleted.",
                 "warning",
             )
 
