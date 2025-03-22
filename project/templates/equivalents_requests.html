@@ -1,7 +1,7 @@
 {% extends "layout.html" %} {% block title %} {% endblock %} {% block content %}
 <div class="container-fluid py-4">
     <div class="row">
-       
+
     </div>
     <div class="row">
         <div class="col-12">
@@ -31,6 +31,10 @@
                                     </th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
                                         User Name
+                                        <!-- from user table -->
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Created at
                                         <!-- from user table -->
                                     </th>
 
@@ -74,6 +78,14 @@
                                             <!-- usrename -->
                                             {{ data.app_user.au_full_name }}
                                         </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">
+                                            {% if data.eqr_created_at %}
+                                            {{ data.eqr_created_at.strftime('%Y-%m-%d') }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}</p>
                                     </td>
                                     <td>
                                         <!-- button for accept or reject -->

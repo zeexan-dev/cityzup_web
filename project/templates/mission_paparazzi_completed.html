@@ -53,7 +53,7 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ mission.mpc_coins }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-bold mb-0">{{ mission.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                        <p class="text-sm font-weight-bold mb-0">{{ mission.created_at.strftime('%Y-%m-%d') }}</p>
                                     </td>
                                     <td>
                                         {% if mission.mpc_status == 1 %}
@@ -65,7 +65,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ url_for('main.update_comp_mission_pap_status', mpc_unique_id=mission.mpc_unique_id) }}">
+                                        <form method="POST" action="{{ url_for('main.update_completed_mission_pap_status', mpc_unique_id=mission.mpc_unique_id) }}">
                                             <button type="submit" name="status" value="1" class="btn btn-success btn-sm">Accept</button>
                                             <button type="submit" name="status" value="-1" class="btn btn-danger btn-sm">Reject</button>
                                         </form>

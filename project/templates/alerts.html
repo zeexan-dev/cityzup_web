@@ -26,6 +26,9 @@
                                         Category
                                     </th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
+                                        Photo
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
                                         Message
                                     </th>
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
@@ -52,6 +55,15 @@
                                     </td>
                                     <td>
                                         <p class="text-sm font-weight-bold mb-0">{{ alert.a_category }}</p>
+                                    </td>
+                                    <td>
+                                        {% if alert.a_photo %}
+                                        <img src="{{ url_for('static', filename='uploads/' + alert.au_id|string + '/' + alert.a_photo) }}" 
+                                        alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
+                                   
+                                        {% else %}
+                                        <p class="text-sm text-secondary">No Photo</p>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         <p class="text-sm font-weight-bold mb-0">{{ alert.a_message }}</p>

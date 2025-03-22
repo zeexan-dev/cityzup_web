@@ -100,7 +100,7 @@ class EquivalentRequest(db.Model):
     au_id = db.Column(db.Integer, db.ForeignKey('app_user.au_id'), nullable=False)
     eqr_number_of_coins = db.Column(db.Integer, nullable=False)
     eqr_accepted = db.Column(db.Integer, nullable=False, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # New column added
+    eqr_created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Renamed column
 
     equivalent = db.relationship('Equivalent', backref=db.backref('equivalent_requests', lazy=True))
     app_user = db.relationship('AppUser', backref=db.backref('equivalent_requests', lazy=True))
