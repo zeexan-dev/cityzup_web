@@ -760,6 +760,7 @@ def get_alerts_with_user_info():
                 "au_email": user.au_email,
                 "au_mobile_number": user.au_mobile_number,
                 "au_id": user.au_id,
+                "a_created_at" : alert.a_created_at
             }
         )
 

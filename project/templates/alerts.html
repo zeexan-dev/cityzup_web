@@ -40,7 +40,7 @@
                                     <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">
                                         User
                                     </th>
-                                    <th class="text-secondary opacity-7"></th>
+                                    <th class="text-secondary opacity-7">Created at</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,9 +58,9 @@
                                     </td>
                                     <td>
                                         {% if alert.a_photo %}
-                                        <img src="{{ url_for('static', filename='uploads/' + alert.au_id|string + '/' + alert.a_photo) }}" 
-                                        alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
-                                   
+                                        <img src="{{ url_for('static', filename='uploads/' + alert.au_id|string + '/' + alert.a_photo) }}"
+                                            alt="Mission Photo" class="img-fluid" style="width: 100px; height: auto;">
+
                                         {% else %}
                                         <p class="text-sm text-secondary">No Photo</p>
                                         {% endif %}
@@ -80,7 +80,11 @@
                                         <p class="text-sm font-weight-bold mb-0">{{ alert.au_full_name }}</p>
                                     </td>
                                     <td class="align-middle">
-                                        <!-- Add your action buttons or links here -->
+                                        {% if alert.a_created_at %}
+                                        {{alert.a_created_at.strftime('%Y-%m-%d')}}
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
